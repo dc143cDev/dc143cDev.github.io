@@ -4,18 +4,14 @@ title: Home
 ---
 
 <div class="posts">
-  {% for post in paginator.posts %}
-  <article class="post">
-    <h1 class="post-title">
-      <a href="{{ post.url | relative_url }}">
-        {{ post.title }}
-      </a>
-    </h1>
-
-    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
-
-    {{ post.content }}
-  </article>
+  {% for post in site.posts %}
+    <article class="post-summary">
+      <h2 class="post-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h2>
+      <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+      <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+    </article>
   {% endfor %}
 </div>
 

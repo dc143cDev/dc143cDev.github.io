@@ -10,15 +10,21 @@
           <a href="{{ site.baseurl }}/" title="Home">{{ site.title }}</a>
         </h3>
         <nav class="nav">
+          <a href="{{ site.baseurl }}/">Posts</a>
+          <a href="{{ site.baseurl }}/projects">Projects</a>
           <a href="{{ site.baseurl }}/about">About</a>
-          <a href="{{ site.baseurl }}/archive">Archive</a>
-          <a href="{{ site.baseurl }}/atom.xml">RSS</a>
         </nav>
       </header>
-      <main>
-        {{ content }}
-      </main>
-
+      <div class="layout-wrapper">
+        {% if page.url == "/" %}
+          <aside class="sidebar">
+            {% include sidebar.html %}
+          </aside>
+        {% endif %}
+        <main class="main-content {% if page.url != "/" %}full-width{% endif %}">
+          {{ content }}
+        </main>
+      </div>
       <footer class="footer">
         <small>
           &copy; <time datetime="{{ site.time | date_to_xmlschema }}">{{ site.time | date: '%Y' }}</time>. All rights reserved.

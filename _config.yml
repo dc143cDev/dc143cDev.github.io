@@ -6,6 +6,12 @@ paginate: 1
 baseurl: ""
 permalink: pretty
 
+author:
+  name: dc143c
+  bio: 블로그 설명
+  url: https://dc143cDev.github.io
+  email: devc143c@gmail.com
+
 # Gems
 plugins:
   - jekyll-gist
@@ -32,10 +38,6 @@ sass:
 # ga_analytics: UA-000000-0
 
 # Specify the author for blog posts
-author:
-  name: Mark Otto
-  url: https://twitter.com/mdo
-  email: markdotto@gmail.com
 
 # Custom vars
 version: 3.0.0
