@@ -1,18 +1,19 @@
 # Setup
 title: dc143c
-tagline: Blog
+tagline: blog
+
 url: https://dc143cDev.github.io
-paginate: 1
+#paginate: 1
 baseurl: ""
 permalink: pretty
 
 author:
   name: dc143c
-  bio: 개발자이자 아마추어 웹소설 작가입니다. 유용한 도구와 재밌는 이야기, 게임을 만드는 것에 관심이 있습니다. 모바일 앱 개발자로 커리어를 시작하여, Flutter의 한계를 뛰어넘는 작업에 도전하는 중입니다
+  bio: 개발자이자 아마추어 작가입니다.<br>유용한 도구와 재밌는 이야기, 게임을 만드는 것에 관심이 있습니다.<br>모바일 앱 개발자로 커리어를 시작하여, Flutter의 한계를 뛰어넘는 작업에 도전중입니다.
   url: https://dc143cDev.github.io
   email: devc143c@gmail.com
 
-# Gems
+# Gem
 plugins:
   - jekyll-gist
   - jekyll-paginate
