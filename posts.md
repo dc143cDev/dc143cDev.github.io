@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Archive
+title: Posts
 ---
 
-# Archive
+# Posts
 
 Browse all posts by month and year.
 
