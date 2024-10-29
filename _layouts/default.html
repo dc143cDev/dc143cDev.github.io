@@ -4,6 +4,12 @@
   {% include head.html %}
 
   <body>
+    {% if page.layout == 'post' %}
+    <div class="progress-container">
+      <div class="progress-bar" id="scrollProgress"></div>
+    </div>
+    {% endif %}
+    
     <div class="container content">
       <header class="masthead">
         <h3 class="masthead-title">
@@ -21,7 +27,7 @@
             {% include sidebar.html %}
           </aside>
         {% endif %}
-        <main class="main-content {% if page.url != "/" %}full-width{% endif %}">
+        <main class="main-content {% if page.url != "/" and layout.name != 'post' %}full-width{% endif %}">
           {{ content }}
         </main>
       </div>
@@ -42,5 +48,22 @@
        ga('send', 'pageview');
      </script>
     {% endif %}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (document.querySelector('.post-wrapper')) {  // 포스트 페이지인 경우에만
+        // 스크롤 프로그레스 바 업데이트
+        function updateProgressBar() {
+          const winScroll = document.documentElement.scrollTop;
+          const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const scrolled = (winScroll / height) * 100;
+          document.getElementById("scrollProgress").style.width = scrolled + "%";
+        }
+
+        window.addEventListener('scroll', updateProgressBar);
+        updateProgressBar();
+      }
+    });
+    </script>
   </body>
 </html>
