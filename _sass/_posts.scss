@@ -65,3 +65,23 @@
     }
   }
 }
+
+.post-summary {
+  margin-bottom: 1.6rem;
+  padding: 0.8rem 0;
+
+  .post-title {
+    margin-bottom: 0.6rem;
+  }
+
+  .post-date {
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--gray-400);
+  }
+
+  .post-excerpt {
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+}

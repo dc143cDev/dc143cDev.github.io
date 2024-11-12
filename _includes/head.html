@@ -10,7 +10,8 @@
     {% endif %}
   </title>
 
-  <link rel="stylesheet" href="{{ 'styles.css' | relative_url }}">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="{{ 'assets/css/styles.css' | relative_url }}">
   <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ '/assets/apple-touch-icon-precomposed.png' | relative_url }}">
   <link rel="shortcut icon" href="{{ '/assets/favicon.ico' | relative_url }}">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ 'atom.xml' | relative_url }}">
