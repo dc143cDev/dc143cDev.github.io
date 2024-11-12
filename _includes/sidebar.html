@@ -3,16 +3,23 @@
     <h2 class="profile-name">{{ site.author.name }}</h2>
     <p class="profile-bio">{{ site.author.bio }}</p>
     <div class="profile-links">
-      <a href="{{ site.author.url }}" target="_blank">Twitter</a>
-      <a href="mailto:{{ site.author.email }}">Email</a>
+      <a href="{{ site.author.github }}" target="_blank">GitHub</a>
     </div>
 </div>
 
 <style>
   .profile-picture {
-    width: 150px;  /* 원하는 너비로 조정 */
-    height: 150px; /* 원하는 높이로 조정 */
-    object-fit: cover; /* 이미지 비율 유지 */
-    border-radius: 50%; /* 원형 이미지를 위한 선택적 스타일 */
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .profile-links {
+    margin-top: 1rem;
+  }
+  
+  .profile-links a {
+    font-weight: 600;
   }
 </style>
