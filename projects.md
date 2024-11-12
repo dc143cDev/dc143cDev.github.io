@@ -1,11 +1,28 @@
 ---
-layout: page
+layout: default
 title: Projects
+permalink: /projects/
 ---
 
-{% for project in site.pages %}
-  {% if project.path contains 'projects/' %}
-    <h2><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
-    <p>{{ project.excerpt }}</p>
-  {% endif %}
-{% endfor %}
+<div class="posts-container">
+  <h1 class="archive-title">Projects</h1>
+  <div class="posts-list">
+    {% for post in site.projects %}
+      <article class="post-item" data-tags="{{ post.tags | join: ',' | downcase }}">
+        <h3 class="post-title">
+          <a href="{{ post.url }}">{{ post.title }}</a>
+        </h3>
+        <div class="post-meta">
+          <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+          {% if post.tags %}
+            <div class="post-tags">
+              {% for tag in post.tags %}
+                <span class="tag-small">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</div>

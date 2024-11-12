@@ -6,53 +6,26 @@ layout: default
   <div class="progress-bar" id="scrollProgress"></div>
 </div>
 
-<div class="post-wrapper">
-  <article class="post">
+<article class="medium-post">
+  <header class="post-header">
     <h1 class="post-title">{{ page.title }}</h1>
-    <time datetime="{{ page.date | date_to_xmlschema }}" class="post-date">{{ page.date | date_to_string }}</time>
+    <div class="post-meta">
+      <span class="meta-group">
+        {{ page.date | date: "%B %d, %Y" }}
+        <span class="post-divider">&nbsp;·&nbsp;</span>
+        {{ words | divided_by: 180 | plus: 1 }} min read
+      </span>
+    </div>
+    {% if page.tags %}
+    <div class="post-tags">
+      {% for tag in page.tags %}
+        <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="post-content">
     {{ content }}
-  </article>
-
-  <aside class="post-toc">
-    <nav id="toc" class="toc"></nav>
-  </aside>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const headings = document.querySelectorAll('.post h2, .post h3');
-  const toc = document.getElementById('toc');
-  const tocLinks = [];
-
-  headings.forEach((heading, index) => {
-    const id = `section-${index}`;
-    heading.id = id;
-
-    const link = document.createElement('a');
-    link.href = `#${id}`;
-    link.textContent = heading.textContent;
-    link.className = `toc-link ${heading.tagName.toLowerCase()}`;
-    
-    tocLinks.push({ link, heading });
-    toc.appendChild(link);
-  });
-
-  function updateToc() {
-    const scrollPos = window.scrollY;
-    
-    for (let i = tocLinks.length - 1; i >= 0; i--) {
-      const { link, heading } = tocLinks[i];
-      const headingTop = heading.offsetTop;
-      
-      if (scrollPos >= headingTop - 100) {
-        tocLinks.forEach(item => item.link.classList.remove('active'));
-        link.classList.add('active');
-        break;
-      }
-    }
-  }
-
-  window.addEventListener('scroll', updateToc);
-  updateToc();
-});
-</script>
+  </div>
+</article>

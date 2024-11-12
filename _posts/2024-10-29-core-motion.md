@@ -2,6 +2,7 @@
 layout: post
 title: "Core motion Framework 파헤치기"
 date: 2024-10-24
+tags: [iOS, Core Motion, Swift]
 ---
 
 ## Core Motion 소개

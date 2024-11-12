@@ -2,6 +2,7 @@
 layout: post
 title: "Cursor IDE + 머메이드로 프로젝트 시각화하기"
 date: 2024-10-24
+tags: [AI, Tool, IDE, Documentation]
 ---
 
 ## Cursor + 머메이드
