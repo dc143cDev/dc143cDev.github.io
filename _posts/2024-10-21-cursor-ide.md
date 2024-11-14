@@ -1,20 +1,18 @@
 ---
 layout: post
-title: "Cursor IDE + 머메이드로 프로젝트 시각화하기"
+title: "프롬프트 한 문장으로 프로젝트 시각화하기"
 date: 2024-10-24
 tags: [AI, Tool, IDE, Documentation]
+read_time: 7
+subtitle: "Cursor IDE의 코드베이스 기능과 머메이드 AI의 마크다운을 이용하여 프로젝트의 구조도를 그려봅시다"
 ---
-
-## Cursor + 머메이드
-프롬프트 한 문장으로 프로젝트의 구조와 흐름을 시각화하는 방법
 
 ### 개요
 
 첫 직장. 첫 프로젝트를 완수한 후 얼마 지나지 않아 제게 새로운 미션이 생겼습니다.
 
 그동안 개발했던 앱의 일부 핵심 기능을 뽑아 추후 신규 프로젝트에 활용할수 있도록 고도화 하라는 임무였죠.
-
-이런 유형의 일은 프로젝트의 구조와 주요 기능의 동작을 파악하는게 중요하다고 생각합니다.
+기존 프로젝트의 구조와 주요 기능의 동작을 파악하는 작업이 필요했습니다.
 
 하지만 작지 않은 규모의 앱을 아직 신입의 실력인 제가 개발 영역을 거의 혼자 담당했기에, 각각의 모듈이나 주요 함수를 문서화하기는 커녕, 프로젝트의 전반적인 구조도조차 만들지 못했죠.
 
@@ -22,7 +20,6 @@ tags: [AI, Tool, IDE, Documentation]
 
 그래서 지난날의 저의 나태함을 만회하기 위해 커서와 머메이드를 활용해보기로 했습니다.
 
-커서 IDE의 코드베이스 기능을 활용해 프롬프트 한 문장으로 프로젝트의 구조도를 그려봅시다.
 
 
 ### 머메이드(Mermaid)가 뭐에요?
@@ -33,3 +30,39 @@ tags: [AI, Tool, IDE, Documentation]
 
 - **홈페이지**: [https://www.mermaidchart.com/mermaid-ai](https://www.mermaidchart.com/mermaid-ai)
 - **GitHub 레포지토리**: [https://github.com/mermaid-js/mermaid](https://github.com/mermaid-js/mermaid)
+
+
+
+
+<figure>
+  <img src="/assets/images/post-2041029-012.png" alt="머메이드 구조도 스크린샷" class="screenshot">
+  <figcaption>머메이드 AI 예시를 위한 플러터 게임 샘플 프로젝트 구조도</figcaption>
+</figure>
+
+
+```markdown
+graph TD
+    A[Main] --> B[EndlessRunner Game]
+    B --> C[Game Features]
+    B --> D[UI Components]
+    B --> E[Audio System]
+
+    C --> C1[Player]
+    C --> C2[World]
+    C --> C3[Collision]
+    C --> C4[Background]
+
+    D --> D1[Main Menu]
+    D --> D2[Settings]
+    D --> D3[Level Selection]
+    D --> D4[Game Screen]
+
+    E --> E1[Sound Effects]
+    E --> E2[Background Music]
+    E --> E3[Audio Controller]
+
+```
+
+예시로, 위 구조도를 구현한 마크다운입니다.
+
+위와 마크다운 문법을 사용하면 계층형으로 표현된 구조도를 그릴수 있습니다.

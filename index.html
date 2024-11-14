@@ -10,7 +10,13 @@ title: Home
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       </h3>
       <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
-      <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+      <p class="post-excerpt">
+        {% if post.subtitle %}
+          {{ post.subtitle }}
+        {% else %}
+          {{ post.excerpt | strip_html | truncatewords: 50 }}
+        {% endif %}
+      </p>
     </article>
   {% endfor %}
 </div>

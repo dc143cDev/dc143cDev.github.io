@@ -1,7 +1,7 @@
 .container {
-  max-width: 45rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  max-width: 65rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 4rem;
@@ -9,7 +9,7 @@
 
 @media (min-width: 768px) {
   .container {
-    max-width: 45rem;
+    max-width: 55rem;
   }
 }
 

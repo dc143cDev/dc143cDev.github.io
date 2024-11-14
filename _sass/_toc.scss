@@ -17,16 +17,15 @@
 
 .post-wrapper {
   display: flex;
-  gap: 4rem;
-  max-width: 75rem;
+  max-width: 768px;
   margin: 0 auto;
-  justify-content: center;
+  padding: 0 1rem;
+  gap: 2rem;
 }
 
 .post {
-  flex: 0 0 65%;
-  max-width: 50rem;
-  margin: 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .post-toc {
@@ -35,8 +34,7 @@
   height: fit-content;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
-  flex: 0 0 20%;
-  margin-left: 2rem;
+  flex: 0 0 200px;
 }
 
 .toc {
@@ -69,17 +67,16 @@
 @media (max-width: 1024px) {
   .post-wrapper {
     flex-direction: column;
-    max-width: 50rem;
+    padding: 0 1rem;
   }
   
   .post {
-    flex: 0 0 100%;
+    width: 100%;
   }
   
   .post-toc {
     width: 100%;
     position: static;
-    margin-left: 0;
     margin-top: 2rem;
   }
 }

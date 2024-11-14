@@ -13,7 +13,11 @@ layout: default
       <span class="meta-group">
         {{ page.date | date: "%B %d, %Y" }}
         <span class="post-divider">&nbsp;·&nbsp;</span>
-        {{ words | divided_by: 180 | plus: 1 }} min read
+        {% if page.read_time %}
+          {{ page.read_time }} min read
+        {% else %}
+          {{ content | number_of_words | divided_by: 180 | plus: 1 }} min read
+        {% endif %}
       </span>
     </div>
     {% if page.tags %}
