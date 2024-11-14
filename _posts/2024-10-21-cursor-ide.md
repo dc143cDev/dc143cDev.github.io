@@ -66,3 +66,53 @@ graph TD
 예시로, 위 구조도를 구현한 마크다운입니다.
 
 위와 마크다운 문법을 사용하면 계층형으로 표현된 구조도를 그릴수 있습니다.
+
+<figure>
+  <img src="/assets/images/post-241029-02.png" alt="머메이드 시퀀스 다이어그램 스크린샷" class="screenshot">
+  <figcaption>머메이드 AI 예시를 위한 플러터 게임 샘플 시퀀스 다이어그램</figcaption>
+</figure>
+
+마크다운:
+```markdown
+graph TD
+ sequenceDiagram
+    actor Player
+    participant MainMenu
+    participant LevelSelection
+    participant GameScreen
+    participant EndlessWorld
+    participant PlayerComponent
+    participant ScoreSystem
+    
+    Player->>MainMenu: 게임 시작
+    MainMenu->>LevelSelection: Play 버튼 클릭
+    
+    Player->>LevelSelection: 레벨 선택
+    LevelSelection->>GameScreen: 레벨 로드
+    
+    GameScreen->>EndlessWorld: 월드 초기화
+    EndlessWorld->>PlayerComponent: 플레이어 생성
+    
+    loop Game Loop
+        Player->>PlayerComponent: 화면 탭하여 점프
+        PlayerComponent->>EndlessWorld: 충돌 체크
+        EndlessWorld->>ScoreSystem: 점수 업데이트
+        
+        alt 목표 점수 달성
+            ScoreSystem->>GameScreen: 승리 다이얼로그 표시
+            GameScreen->>LevelSelection: 다음 레벨 이동
+        else 장애물과 충돌
+            EndlessWorld->>PlayerComponent: 피해 효과 적용
+            PlayerComponent->>ScoreSystem: 점수 리셋
+        end
+    end
+
+```
+
+이번엔 시퀀스 다이어그램의 사례입니다.
+
+위와 같이 시퀀스 마크다운 문법을 사용하여 어떠한 모듈이나 기능을 시연하는 유저의 행동 흐름을 시각화할 수 있습니다.
+
+
+
+### 
