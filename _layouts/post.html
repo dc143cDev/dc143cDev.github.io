@@ -33,3 +33,41 @@ layout: default
     {{ content }}
   </div>
 </article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 모든 스크린샷 이미지를 wrapper로 감싸기
+  document.querySelectorAll('.screenshot').forEach(img => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'screenshot-wrapper';
+    img.parentNode.insertBefore(wrapper, img);
+    wrapper.appendChild(img);
+    
+    // 클릭 이벤트 추가
+    wrapper.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      
+      const modalImg = document.createElement('img');
+      modalImg.src = img.src;
+      modalImg.className = 'modal-content';
+      
+      modal.appendChild(modalImg);
+      document.body.appendChild(modal);
+      
+      // 모달 표시 애니메이션
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+      });
+      
+      // 모달 닫기
+      modal.addEventListener('click', function() {
+        modal.classList.remove('active');
+        setTimeout(() => {
+          modal.remove();
+        }, 300);
+      });
+    });
+  });
+});
+</script>
