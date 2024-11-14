@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Core motion Framework 파헤치기"
+title: "Core motion Framework 파헤치기(작성중)"
 date: 2024-10-24
 tags: [iOS, Core Motion, Swift]
 ---
