@@ -5,7 +5,7 @@ tagline: blog
 url: https://dc143cDev.github.io
 #paginate: 1
 baseurl: ""
-permalink: pretty
+permalink: /:title/
 
 author:
   name: dc143c

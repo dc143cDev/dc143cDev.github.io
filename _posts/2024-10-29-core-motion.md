@@ -1,8 +1,10 @@
 ---
 layout: post
-title: "Core motion Framework 파헤치기(작성중)"
-date: 2024-10-24
-tags: [iOS, Core Motion, Swift]
+title: "Core motion + Flutter, 디바이스 모션 데이터 활용하기"
+date: 2024-10-29
+tags: [iOS, Swift, Flutter]
+read_time: 10
+subtitle: "Core Motion Framework를 활용하여 IOS 디바이스의 모션 데이터를 플러터에서 활용해봅니다"
 ---
 
 ## Core Motion 소개
