@@ -38,7 +38,7 @@ subtitle: "Getx와 Floor를 활용하여 실전 업무에 적용할 수 있는 �
 ### GetX
 
 깃허브 링크: 
-**https://github.com/jonataslaw/getx**
+**[https://github.com/jonataslaw/getx](https://github.com/jonataslaw/getx)**
 
 GetX는 플러터 생태계에서 가장 많이 사용되는 상태 관리 패키지입니다. 
 
@@ -48,6 +48,14 @@ GetX는 플러터 생태계에서 가장 많이 사용되는 상태 관리 패�
 ### 상태 관리
 
 이견의 여지가 없는 GetX의 핵심 기능입니다.
+
+플러터의 기본 라이프사이클인 State를 사용하던, [Riverpod](https://github.com/rrousselGit/riverpod)이나 [Provider](https://pub.dev/packages/provider)를 사용하던 상태 관리 패키지의 목적은 동일합니다.
+
+**필요한 데이터만 제 때 업데이트하여 메모리를 절약하자**는 것입니다.
+
+이중에서도 GetX는 Obx와 Rx 변수를 하용하여 데이터를 직관적으로 관리합니다.
+
+
 
 ### GetxWidget
 
@@ -62,9 +70,9 @@ GetX는 플러터 생태계에서 가장 많이 사용되는 상태 관리 패�
 
 ### Floor
 깃허브 링크:
-**https://github.com/tekartik/floor**
+**[https://github.com/tekartik/floor](https://github.com/tekartik/floor)**
 
-Floor는 플러터 생태계에서 가장 많이 사용되는 데이터베이스 패키지는 아니지만, 안드로이드 생태계의 Room 라이브러리처럼 유사 관계형 데이터베이스로서 **View Model과 데이터베이스의 역할을 모두 수행**할 수 있습니다.
+Floor는 플러터 생태계에서 가장 많이 사용되는 데이터베이스 패키지는 아니지만, 안드로이드 생태계의 [Room](https://developer.android.com/training/data-storage/room) 라이브러리처럼 유사 관계형 데이터베이스로서 **View Model과 데이터베이스의 역할을 모두 수행**할 수 있습니다.
 
 ### Entity
 
