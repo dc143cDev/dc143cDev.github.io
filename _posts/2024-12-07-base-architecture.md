@@ -3,7 +3,7 @@ layout: post
 title: "Flutter 베이스 아키텍처로 일 쉽게 만들기"
 date: 2025-01-05
 tags: [Flutter, Architecture, GetX, Floor]
-read_time: 20
+read_time: 30
 subtitle: "Getx와 Floor를 활용하여 실전 업무에 적용할 수 있는 아키텍처를 만들어봅니다."
 ---
 
@@ -195,9 +195,15 @@ class ArtistController extends GetxController {
 
 생명주기 메소드는 활용하기 나름이지만, 각 메소드들은 보통 다음과 같은 상황에서 호출됩니다:
 
-- onInit(): 컨트롤러가 초기화 될 때. 특정 페이지에서 컨트롤러를 등록하거나, 컨트롤러와 연결된 페이지로 새로 이동한 경우. 보통 변수의 초기화, 이전 페이지에서 전달된 데이터 처리 등을 이곳에서 구성합니다.
-- onReady(): 컨트롤러가 준비될 때(정확히는, UI가 완전히 렌더링 된 후). 컨트롤러가 초기화 된 후 호출되는 메서드. 보통 데이터 초기화 등을 이곳에서 구성합니다.
-- onClose(): 컨트롤러가 종료될 때. 등록된 변수의 해제, 이전 페이지로 돌아갈 시에 호출되는 비즈니스 로직 등을 이곳에서 구성합니다.
+- onInit(): 컨트롤러가 초기화 될 때. 
+
+특정 페이지에서 컨트롤러를 등록하거나, 컨트롤러와 연결된 페이지로 새로 이동한 경우. 보통 변수의 초기화, 이전 페이지에서 전달된 데이터 처리 등을 이곳에서 구성합니다.
+- onReady(): 컨트롤러가 준비될 때(정확히는, UI가 완전히 렌더링 된 후).
+
+ 컨트롤러가 초기화 된 후 호출되는 메서드. 보통 데이터 초기화 등을 이곳에서 구성합니다.
+- onClose(): 컨트롤러가 종료될 때. 
+
+등록된 변수의 해제, 이전 페이지로 돌아갈 시에 호출되는 비즈니스 로직 등을 이곳에서 구성합니다.
 
 
 ~~~dart
@@ -215,21 +221,44 @@ Get.find<ArtistController>();
 Get.delete<ArtistController>();
 ~~~
 
-GetXController는 컨트롤러의 의존성을 관리하는 방법은 위와 같습니다.
+컨트롤러의 의존성을 관리하는 방법은 위와 같습니다.
 
+위 방식들도 많이 사용되지만, 사실 더 간단하게 컨트롤렁를 등록하고 해제하는 방법이 있습니다.
+
+바로 GetxView를 통해 컨트롤러를 등록하는 방법입니다.
 
 
 #### GetxView
 
-GetxView는 기존의 StatelessWidget과 비슷한 형태로 구성되며, 모듈의 UI, 즉 View 영역을 구성합니다.
+GetxView는 StatelessWidget과 같이 별도의 처리 없이는 정적인 상태를 가지는 View 영역의 클래스입니다.
 
+~~~dart
+// 컨트롤러를 등록하고, 컨트롤러와 연결된 페이지로 이동할 때 컨트롤러를 자동으로 해제합니다.
+class ArtistPage extends GetxView<ArtistController> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Artist Page')),
+      body: Center(child: Text('Artist: ${controller.artist.value.name}')),
+    );
+  }
+}
+~~~
+
+GetxView의 특징은 위처럼 Get.put() 메소드를 통해 컨트롤러를 등록하는 것이 아닌, 클래스 자체를 통해 컨트롤러를 등록하는 것입니다.
+
+GetxView를 사용하면 GetxView로 구성한 페이지를 호출하거나 종료될 때 자동으로 컨트롤러가 등록/해제되므로, 보다 직관적이고 편리하게 컨트롤러 의존성을 관리할 수 있습니다.
+
+GetX 구조에 사용되는 StatelessWidget으로 생각하셔도 무방합니다.
+
+### 라우팅
+
+지금까지 학습하신 Getx 구조, 즉 GetxController와 GetxView로 페이지 모듈을 이루는 구조를 만드셨다면, 이제 이 페이지들을 라우팅하는 방법을 알아봅시다.
 
 
 
 
 #### GetxService
-
-### 라우팅
 
 
 ### Floor
