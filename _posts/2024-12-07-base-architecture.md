@@ -55,6 +55,83 @@ GetX는 플러터 생태계에서 가장 많이 사용되는 상태 관리 패�
 
 이중에서도 GetX는 Obx와 Rx(반응형) 변수를 활용해, 데이터 변경 시 UI가 자동으로 반응하도록 하여 직관적으로 상태 관리를 할 수 있습니다. 베이스 아키텍처에 GetX를 활용하는 가장 큰 이유이기도 합니다.
 
+~~~dart
+// 컨트롤러
+class CounterController extends GetxController {
+  final RxInt count = 0.obs;
+  final RxString status = 'Tap + to start'.obs;
+
+  void increment() {
+    count.value++;
+    _updateStatus();
+  }
+
+  void _updateStatus() {
+    status.value = count.value % 2 == 0 
+      ? 'Even number: ${count.value}'
+      : 'Odd number: ${count.value}';
+  }
+}
+
+// UI
+class CounterPage extends StatelessWidget {
+  final controller = Get.put(CounterController()); // 컨트롤러 등록
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('GetX Counter')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // count 상태를 관찰
+            Obx(() => Text(
+              '${controller.count}',
+              style: TextStyle(fontSize: 48),
+            )),
+            
+            SizedBox(height: 12),
+            
+            // status 상태를 관찰
+            Obx(() => Text(
+              controller.status.value,
+              style: TextStyle(fontSize: 16),
+            )),
+            
+            SizedBox(height: 24),
+            
+            ElevatedButton(
+              onPressed: controller.increment,
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+~~~
+
+GetX의 상태 관리는 위와 같이 간단하게 구성할 수 있습니다.
+
+변동될 데이터를 **Rx 변수**로 선언하고, **Obx 위젯**으로 업데이트 될 데이터를 활용하는 View 영역을 감싸 데이터가 변동될 때마다 해당 영역만 자동으로 업데이트 되도록 합니다.
+
+~~~dart
+// 데이터 모델
+class Model {
+  final RxInt count = 0.obs;
+  final RxString status = 'Tap + to start'.obs;
+}
+
+class CounterController extends GetxController {
+  final Rx<Model> model = Model().obs; // 데이터 모델을 Rx 변수로 선언
+
+  // 데이터 업데이트 메서드
+}
+~~~
+
+Rx 변수는 일반적으로 사용되는 기본 타입들(int, String, bool 등)을 포함한 대부분의 타입을 지원하며, 위와 같은 방식으로 커스텀 모델을 포함한 클래스 객체 역시 Rx 변수로 등록할수 있습니다.
 
 ### GetxWidget
 
