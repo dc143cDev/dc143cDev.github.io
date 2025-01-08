@@ -247,13 +247,14 @@ class ArtistPage extends GetxView<ArtistController> {
 
 GetxView의 특징은 위처럼 Get.put() 메소드를 통해 컨트롤러를 등록하는 것이 아닌, 클래스 자체를 통해 컨트롤러를 등록하는 것입니다.
 
-GetxView를 사용하면 GetxView로 구성한 페이지를 호출하거나 종료될 때 자동으로 컨트롤러가 등록/해제되므로, 보다 직관적이고 편리하게 컨트롤러 의존성을 관리할 수 있습니다.
+GetxView를 사용하면 구성한 페이지를 호출하거나 종료될 때 자동으로 컨트롤러가 등록/해제되므로, 보다 직관적이고 편리하게 컨트롤러 의존성을 관리할 수 있습니다.
 
-GetX 구조에 사용되는 StatelessWidget으로 생각하셔도 무방합니다.
+GetxController를 담을수 있는 StatelessWidget으로 생각하셔도 무방합니다.
 
 ### 라우팅
 
-지금까지 학습하신 Getx 구조, 즉 GetxController와 GetxView로 페이지 모듈을 이루는 구조를 만드셨다면, 이제 이 페이지들을 라우팅하는 방법을 알아봅시다.
+지금까지 학습하신 Getx 구조, 즉 GetxController와 GetxView로 페이지 모듈을 이루는 구조를 만드셨다면, 이제 이 페이지들을 라우팅하는 방법을 알아보시면 좋을 것 같습니다.
+
 
 
 
