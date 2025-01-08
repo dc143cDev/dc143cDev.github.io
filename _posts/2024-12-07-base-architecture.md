@@ -73,7 +73,7 @@ class CounterController extends GetxController {
   }
 }
 
-// UI
+// UI. StatefulWidget이 아닌 StatelessWidget을 사용. 정적인 위젯에 갱신이 필요한 부분만 Obx로 감싸기.
 class CounterPage extends StatelessWidget {
   final controller = Get.put(CounterController()); // 컨트롤러 등록
 
@@ -117,17 +117,22 @@ GetX의 상태 관리는 위와 같이 간단하게 구성할 수 있습니다.
 
 변동될 데이터를 **Rx 변수**로 선언하고, **Obx 위젯**으로 업데이트 될 데이터를 활용하는 View 영역을 감싸 데이터가 변동될 때마다 해당 영역만 자동으로 업데이트 되도록 합니다.
 
+감시할 변수는 **변수명.value** 형태로 접근합니다.
+
 ~~~dart
 // 데이터 모델
-class Model {
-  final RxInt count = 0.obs;
-  final RxString status = 'Tap + to start'.obs;
+class Artist {
+  final RxString name = 'John Mayer'.obs;
+  final RxInt age = 45.obs;
 }
 
-class CounterController extends GetxController {
-  final Rx<Model> model = Model().obs; // 데이터 모델을 Rx 변수로 선언
+class ArtistController extends GetxController {
+  final Rx<Artist> artist = Artist().obs; // 데이터 모델을 Rx 변수로 선언
 
   // 데이터 업데이트 메서드
+  void happyBirthday() {
+    artist.value.age.value++;
+  }
 }
 ~~~
 
@@ -135,9 +140,92 @@ Rx 변수는 일반적으로 사용되는 기본 타입들(int, String, bool 등
 
 ### GetxWidget
 
-#### GetxView
+상태 관리에 대한 대략적인 설명을 마무리했습니다.
+
+헌데, GetX에 대해 생소하신 분들은 상태관리 문단의 코드를 보시면서 처음 보는 부분이 있을 겁니다.
+
+GetX에서는 모든 페이지를 위한 라우팅 기능을 제공하는 대신, 페이지 단위의 모듈을 관리하는 방식을 사용합니다.
+
+이러한 모듈은 대부분의 경우 페이지와 비슷한 생명주기를 가지며, 모듈 단위로 라우팅을 관리하는 방식을 사용합니다.
+
+이러한 모듈을 위한 클래스는 GetxView, GetxController, GetxService 클래스로 구성됩니다.
 
 #### GetxController
+
+GetxController는 모듈의 비즈니스 로직을 구성하는 클래스입니다.
+
+~~~ dart
+class ArtistController extends GetxController {
+  final Rx<Artist> artist = Artist().obs;
+
+  void happyBirthday() {
+    artist.value.age.value++;
+  }
+
+  void shutDownTheParty() {
+    print('Party is over');
+  }
+
+  //컨트롤러가 초기화될 때 호출되는 메서드
+  @override
+  void onInit() {
+    super.onInit();
+    // 보통 변수의 초기화, 이전 페이지에서 전달된 데이터 처리 등을 이곳에서 구성합니다.
+    happyBirthday();
+  }
+
+  //컨트롤러가 준비될 때 호출되는 메서드
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  //컨트롤러가 종료될 때 호출되는 메서드
+  @override
+  void onClose() {
+    super.onClose();
+    shutDownTheParty();
+  }
+}
+~~~
+
+이곳에 비즈니스에 필요한 변수(GetX 구조에서는 대부분 Rx 변수)와 메서드를 구성하고, 이를 통해 비즈니스 로직을 구성합니다.
+
+또한, onInit(), onReady(), onClose() 메서드를 오버라이드하여 컨트롤러의 생명주기에 따라 필요한 로직을 구성할 수 있습니다.
+
+생명주기 메소드는 활용하기 나름이지만, 각 메소드들은 보통 다음과 같은 상황에서 호출됩니다:
+
+- onInit(): 컨트롤러가 초기화 될 때. 특정 페이지에서 컨트롤러를 등록하거나, 컨트롤러와 연결된 페이지로 새로 이동한 경우. 보통 변수의 초기화, 이전 페이지에서 전달된 데이터 처리 등을 이곳에서 구성합니다.
+- onReady(): 컨트롤러가 준비될 때(정확히는, UI가 완전히 렌더링 된 후). 컨트롤러가 초기화 된 후 호출되는 메서드. 보통 데이터 초기화 등을 이곳에서 구성합니다.
+- onClose(): 컨트롤러가 종료될 때. 등록된 변수의 해제, 이전 페이지로 돌아갈 시에 호출되는 비즈니스 로직 등을 이곳에서 구성합니다.
+
+
+~~~dart
+// 컨트롤러를 즉시 메모리에 등록합니다. 연결된 페이지가 Pop 되거나 라우트 스택에서 제거되면 자동으로 해제됩니다.
+Get.put(ArtistController());
+
+
+// 컨트롤러를 등록하지만, find 메소드 등으로 컨트롤러를 처음 호출하기 전까지는 메모리에 올리지 않습니다.
+Get.lazyPut(ArtistController());
+
+// 컨트롤러 찾기
+Get.find<ArtistController>();
+
+// 컨트롤러 해제
+Get.delete<ArtistController>();
+~~~
+
+GetXController는 컨트롤러의 의존성을 관리하는 방법은 위와 같습니다.
+
+
+
+#### GetxView
+
+GetxView는 기존의 StatelessWidget과 비슷한 형태로 구성되며, 모듈의 UI, 즉 View 영역을 구성합니다.
+
+
+
+
 
 #### GetxService
 
