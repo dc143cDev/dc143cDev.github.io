@@ -349,12 +349,29 @@ class User {
   String name;
   String email;
 
+  // final 키워드를 사용하는 경우, 필수적으로 초기화 필요.
+  // final int id;
+  // final String name;
+  // final String email;
+
+  // required 키워드를 사용하는 경우, 필수적으로 초기화 필요.
+  // required int id;
+  // String name;
+  // String email;
+
+  // 저의 경우에는, 위처럼 키워드를 사용하지 않고 멤버 변수를 선언한 뒤, 
+  // 생성자를 통해 초기화 하는 방식을 사용합니다.
+  // 이 경우 기본 값이 등록되어있어 null 체크를 하지 않아도 되므로 편리합니다.
+  // 이는 편의성을 중시하는 구조로, 
+  // 실제 개발 프로젝트에서는 데이터베이스 테이블에 저장되는 데이터의 형태를 명확하게 정의하는 것이 좋습니다.
   User({
     this.id = 0, 
     this.name = '',
     this.email = '',
   });
 
+  // 복사 생성자. 엔티티를 뷰 모델로서 활용할 때 특정 값만 변동하는 경우(예: 유저 이름 변경),
+  // 기존의 다른 값은 유지하고 특정 값만 변경하는 로직에서 유용합니다.
   User.copyWith({
     int? id,
     String? name,
@@ -363,7 +380,9 @@ class User {
        name = name ?? this.name,
        email = email ?? this.email;
 
-
+  // json 파싱 과정에서 사용되는 메서드.
+  // 데이터베이스에 저장되는 데이터의 형태가 json인 경우나, 
+  // 서버와의 통신 과정에서 데이터가 json 형태로 전달되는 경우, 엔티티 변환 시 유용합니다.
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'],
     name: json['name'],
@@ -378,8 +397,62 @@ class User {
 }
 ~~~
 
+Floor의 Entity는 위와 같이 구성됩니다.
+
+일반적인 플러터의 모델 객체를 선언하는 과정과 비슷하지만, Entity는 데이터베이스의 테이블을 구성하는 요소로서 활용하는 방식에 따라 View Model과 데이터베이스의 역할을 모두 수행할 수 있습니다.
+
+~~~dart
+  class GlobalManager extends GetxService {
+    static GlobalManager get to => Get.find<GlobalManager>();
+
+    // 데이터베이스 접근 변수
+    late final AppDatabase db;
+
+    // 데이터베이스에서 데이터를 조회하기 위한 DAO 접근 변수
+    UserDao get userDao => db.userDao;
+
+    // Rxable User Entity 변수
+    final Rxn<UserEntity> user = Rxn<UserEntity>();
+
+    @override
+    void onInit() async {
+      super.onInit();
+      db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
+      // 데이터베이스에서 데이터를 조회하여 Rxable User Entity 변수에 할당.
+      // 이 전에 서버에서 데이터를 조회하는 로직이 있었다면, 이곳에서 데이터를 조회하는 로직을 구성합니다.
+      user.value = await userDao.findUserById(1);
+    }
+  }
+
+  // 유저 데이터를 활용하는 View 영역.
+  // 다른 페이지에서 유저 데이터가 변동되어도, 전역적으로 유저 Entity를 관리하기에
+  // 유저 데이터가 변동될 때마다 자동으로 업데이트 됩니다.
+  class UserPage extends GetxView<UserController> {
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: Text('User Page')),
+        body: Center(child: Text('User: ${controller.globalManager.user.value?.name}')),
+      );
+    }
+  }
+~~~
+
+후술할 베이스 아키텍처를 비롯, 저는 Entity를 뷰 모델로서 활용하기도 하며, 위와 같이 GetxService를 통해 전역적으로 사용되는 데이터를 Entity로 관리하는 경우가 많습니다.
 
 ### Converter
+
+Floor 구조에서 위처럼 Entity를 활용하기 위해서는, Converter 클래스를 통해 데이터베이스에 저장되는 데이터의 형태를 정의해야 합니다.
+
+~~~dart
+import 'package:floor/floor.dart';
+
+@TypeConverter
+int stringToId(String value) {
+  return int.parse(value);
+}
+~~~
 
 ### DAO
 
