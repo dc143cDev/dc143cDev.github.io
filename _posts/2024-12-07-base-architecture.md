@@ -33,7 +33,9 @@ subtitle: "Getx와 Floor를 활용하여 실전 업무에 적용할 수 있는 �
 
 상술한 듯 이번 포스트는 위 패키지들을 사용하여 베이스 아키텍처를 구성하는 것이 목적이고, 제 설명보다 공식 문서의 내용이 더 정확하고 자세합니다.
 
-이번 문단에서는 베이스 아키텍처에 사용되는 Getx와 Floor의 주요 기능들을 간략하게 소개합니다.
+이번 문단에서는 베이스 아키텍처에 사용되는 Getx와 Floor의 주요 기능들을 간략하게 소개합니다. 
+
+두 패키지에 대한 이해도가 이미 충분하신 분들이라면, 베이스 아키텍처를 설명하는 문단으로 건너뛰셔도 좋습니다.
 
 ### GetX
 
@@ -124,6 +126,7 @@ GetX의 상태 관리는 위와 같이 간단하게 구성할 수 있습니다.
 class Artist {
   final RxString name = 'John Mayer'.obs;
   final RxInt age = 45.obs;
+  final RxList<String> albums = ['Room for Squares', 'Battle Studies', 'Continuum'].obs;
 }
 
 class ArtistController extends GetxController {
@@ -152,7 +155,7 @@ GetX에서는 모든 페이지를 위한 라우팅 기능을 제공하는 대신
 
 #### GetxController
 
-GetxController는 모듈의 비즈니스 로직을 구성하는 클래스입니다.
+GetxController는 GetX 구조의 페이지 모듈에서 데이터 영역과 비즈니스 로직을 구성합니다.
 
 ~~~ dart
 class ArtistController extends GetxController {
@@ -233,7 +236,8 @@ Get.delete<ArtistController>();
 GetxView는 StatelessWidget과 같이 별도의 처리 없이는 정적인 상태를 가지는 View 영역의 클래스입니다.
 
 ~~~dart
-// 컨트롤러를 등록하고, 컨트롤러와 연결된 페이지로 이동할 때 컨트롤러를 자동으로 해제합니다.
+// 컨트롤러를 등록하고, 컨트롤러와 연결된 페이지로 이동할 때 컨트롤러를 자동으로 메모리에 올립니다.
+// 반대로 GetView 페이지를 라우팅 스택에서 제거하면 컨트롤러를 자동으로 해제합니다.
 class ArtistPage extends GetxView<ArtistController> {
   @override
   Widget build(BuildContext context) {
@@ -251,18 +255,79 @@ GetxView를 사용하면 구성한 페이지를 호출하거나 종료될 때 �
 
 GetxController를 담을수 있는 StatelessWidget으로 생각하셔도 무방합니다.
 
-### 라우팅
-
-지금까지 학습하신 Getx 구조, 즉 GetxController와 GetxView로 페이지 모듈을 이루는 구조를 만드셨다면, 이제 이 페이지들을 라우팅하는 방법을 알아보시면 좋을 것 같습니다.
-
-
-
-
 
 #### GetxService
 
+GetxView와 GetxController는 모두 페이지 모듈을 구성하는 클래스입니다.
+
+두 위젯을 통해 페이지 모듈을 구현하는 것만으로도, 비즈니스 로직과 데이터 영역 / View 영역의 책임을 분리하고 효율적인 상태관리가 가능한 구조를 만드실수 있을 겁니다.
+
+하지만 한가지 더 알아두면 유용한 Getx 위젯이 있습니다.
+
+GetxService는 GetxController와 거의 비슷한 기능을 하는 클래스로, 기능 상으로는 큰 차이가 없습니다.
+
+다만 GetxService는 페이지 모듈 단위가 아닌, 전역적으로 사용되는 데이터를 관리하는 데 초점이 맞춰져 있습니다.
+
+
+~~~dart
+class GlobalService extends GetxService {
+  final Rx<User> user = User().obs;
+
+
+  @override
+  void onInit() {
+    super.onInit();
+    getUser();
+  }
+
+
+  Future<void> getUser() async {
+    // 예시 구조. 실제 통신을 구현하여 전역적으로 사용될 데이터(유저 등)를 가져옵니다.
+    user.value = await getUserFromDatabase();
+  }
+}
+~~~
+
+프로젝트의 규모가 커지면 전역적으로 사용되는 데이터를 관리하는 것이 필요해집니다.
+
+이러한 경우 GetxService를 통해 전역적으로 사용되는 데이터를 관리할 수 있습니다.
+
+~~~dart
+main() {
+  runApp(MyApp());
+
+  // initialBinding 옵션을 활용하거나, main 영역에서 할당 가능.
+  //Get.put(GlobalService(), permanent: true);
+}
+
+class MyApp extends GetxView {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      home: HomePage(), 
+      initialBinding: BindingsBuilder(() {
+        Get.put(GlobalService()); // 서비스 등록
+      }),
+    );
+  }
+}
+~~~
+
+위와 같은 구조로 GetxService를 앱이 시작되는 부분의 GetMaterialApp 위젯에 등록하면, 앱이 시작될 때 자동으로 서비스가 초기화되고, 앱이 종료될때까지 메모리에 유지됩니다.
+
+비즈니스 로직을 관리하는 코드는 사용될 때만 메모리에 올리고, 사용이 끝나면 적절히 해제해줘야 하지만, 몇몇 데이터 관리 로직(유저 데이터 등)은 GetxService를 통해 앱 전체의 생명주기와 함께 메모리에 유지하도록 하여 메모리 관리를 편리하게 할 수 있습니다.
+
+이에 대한 더 자세한 내용은 후술할 베이스 아키텍처 설명 문단에서 다루도록 하겠습니다.
+
+이제 베이스 아키텍처에서 사용하는 GetX의 핵심적인 기능들인 상태 관리와 페이지 모듈 클래스에 대한 설명을 마치겠습니다.
+
+GetX 패키지는 위의 기능들 외에도 스낵바와 같은 유틸 기능이나, 네트워크 통신 등 더 다양한 기능들을 제공하지만, 베이스 아키텍처에 핵심적으로 사용되는 기능 외에는 이번 포스트에서 다루지 않겠습니다.
+
 
 ### Floor
+
+앱의 전반적인 구조에 사용되는 기능들을 다루었으니, Floor에 대한 설명을 시작하겠습니다.
+
 깃허브 링크:
 **[https://github.com/tekartik/floor](https://github.com/tekartik/floor)**
 
@@ -270,10 +335,55 @@ Floor는 플러터 생태계에서 가장 많이 사용되는 데이터베이스
 
 ### Entity
 
-### DAO
+Floor의 데이터베이스는 Entity, DAO, Converter 클래스로 구성됩니다.
+
+Entity는 데이터베이스의 테이블을 구성하는 클래스로, Floor는 Entity 단위로 데이터를 조회하고 저장하며, 저장하지 않더라도 Entity 그 자체를 View Model로서 사용할 수 있습니다.
+
+~~~dart
+import 'package:floor/floor.dart';
+
+@entity
+class User {
+  @primaryKey
+  int id;
+  String name;
+  String email;
+
+  User({
+    this.id = 0, 
+    this.name = '',
+    this.email = '',
+  });
+
+  User.copyWith({
+    int? id,
+    String? name,
+    String? email,
+  }) : id = id ?? this.id,
+       name = name ?? this.name,
+       email = email ?? this.email;
+
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+  };
+}
+~~~
+
 
 ### Converter
 
+### DAO
+
+### Database Setting
 
 각 패키지의 주요 기능과 역할에 대한 소개는 여기까지입니다.
 
