@@ -452,15 +452,107 @@ Floor 구조에서 위처럼 Entity를 활용하기 위해서는, Converter 클�
 ~~~dart
 import 'package:floor/floor.dart';
 
+//유저 엔티티 리스트를 데이터베이스에 저장하기 위한 Converter 클래스
 @TypeConverter
-int stringToId(String value) {
-  return int.parse(value);
+class UserListConverter extends TypeConverter<List<User>, String> {
+  @override
+  List<User> decode(String databaseValue) {
+    return User.fromJson(jsonDecode(databaseValue));
+  }
+
+  @override
+  String encode(List<User> value) {
+    return value.toString();
+  }
 }
 ~~~
 
+~~~dart
+
+enum UserType {
+  admin,
+  user,
+  guest,
+}
+
+//유저 타입을 데이터베이스에 저장하기 위한 Converter 클래스
+@TypeConverter
+class UserTypeConverter extends TypeConverter<UserType, String> {
+  @override
+  UserType decode(String databaseValue) {
+    return UserType.values.firstWhere((e) => e.toString() == databaseValue);
+  }
+
+  @override
+  String encode(UserType value) {
+    return value.toString();
+  }
+}
+~~~
+
+기본적인 타입(String, int, double, DateTime 등)은 지원되지만, enum이나, 엔티티 내부에서 엔티티를 사용하는 등 직접 정의한 타입의 경우 별도의 Converter 클래스를 통해 데이터베이스에 저장되는 데이터의 형태를 정의해야 합니다.
+
 ### DAO
 
+이렇게 컨버터와 엔티티를 정의하였다면, 이제 데이터베이스에 접근하기 위한 DAO 클래스를 정의해야 합니다.
+
+~~~dart
+import 'package:floor/floor.dart';
+
+@dao
+abstract class UserDao {
+  @Query('SELECT * FROM user')
+  Future<List<User>> findAllUsers();
+
+  //기본 지원하는 메서드들
+  @insert
+  Future<void> insertUser(User user);
+
+  @delete
+  Future<void> deleteUser(User user);
+
+  @update
+  Future<void> updateUser(User user);
+
+  // 커스텀 메서드. 유저를 아이디로 조회하는 예시 메서드
+  @Query('SELECT * FROM user WHERE id = :id')
+  Future<User> findUserById(int id);
+}
+~~~
+
+DAO는 데이터베이스에 접근하기 위한 메서드들을 정의하는 클래스입니다.
+
+floor에서 기본적으로 지원해주는 CRUD 메서드나, SQL 쿼리를 커스텀 클래스로 정의할 수 있습니다.
+
 ### Database Setting
+
+이제 Floor 데이터베이스를 사용하는데 필요한 모든 요소들을 만들었습니다.
+
+~~~dart
+import 'package:floor/floor.dart';
+
+// 데이터베이스 파일 생성 시 자동으로 생성되는 파일을 미리 정의
+part 'app_database.g.dart';
+
+@TypeConverters([
+  UserListConverter(),
+  UserTypeConverter(),
+])
+
+@Database(version: 1, entities: [User])
+abstract class AppDatabase extends FloorDatabase {
+  UserDao get userDao;
+}
+~~~
+
+실제로 Floor 데이터베이스를 사용하려면, 위와 같이 Database 클래스를 정의합니다.
+
+사용할 컨버터와 DAO, 엔티티를 정의하고, build_runner를 통해 데이터베이스 파일을 생성합니다.
+
+~~~bash
+flutter pub run build_runner build
+~~~
+
 
 각 패키지의 주요 기능과 역할에 대한 소개는 여기까지입니다.
 
