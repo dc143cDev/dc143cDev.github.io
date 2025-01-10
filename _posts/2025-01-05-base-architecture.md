@@ -136,6 +136,10 @@ class ArtistController extends GetxController {
   void happyBirthday() {
     artist.value.age.value++;
   }
+
+  void releaseNewAlbum() {
+    artist.value.albums.add('Sob Lock');
+  }
 }
 ~~~
 
