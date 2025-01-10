@@ -547,12 +547,20 @@ abstract class AppDatabase extends FloorDatabase {
 
 실제로 Floor 데이터베이스를 사용하려면, 위와 같이 Database 클래스를 정의합니다.
 
-사용할 컨버터와 DAO, 엔티티를 정의하고, build_runner를 통해 데이터베이스 파일을 생성합니다.
+~~~yaml
+# pubspec.yaml
+# 플로어 설정을 위한 필수 패키지.
+dev_dependencies:
+  build_runner: ^2.4.1
+  floor: ^2.2.0
+  floor_generator: ^2.2.0
+~~~
 
 ~~~bash
 flutter pub run build_runner build
 ~~~
 
+사용할 컨버터와 DAO, 엔티티를 정의하고, build_runner를 통해 데이터베이스 파일을 생성합니다.
 
 각 패키지의 주요 기능과 역할에 대한 소개는 여기까지입니다.
 
