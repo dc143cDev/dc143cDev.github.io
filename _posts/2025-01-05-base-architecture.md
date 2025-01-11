@@ -589,7 +589,7 @@ GetX는 건물의 튼튼한 **골자와 뼈대**를, Floor는 건물을 사람�
 
 베이스 아키텍처는 비슷한 구조의 여러 뷰를 사용할 때 각 페이지에 일관성과 개발 편의성을 제공하는 것이 주 목적입니다.
 
-따라서, 일관성있는 모듈 구조를 위해 **BaseView**와 **BaseController**를 사용합니다.
+따라서, 일관성있는 페이지 모듈 구조를 위해 **BaseView**와 **BaseController**를 사용합니다.
 
 ~~~dart
 //BaseView는 모든 뷰의 기본 구조를 정의하는 클래스입니다.
@@ -632,6 +632,9 @@ lib/
     login/
       login_view.dart # BaseView
       login_controller.dart # BaseController
+    my_page/
+      my_page_view.dart # BaseView
+      my_page_controller.dart # BaseController
 ~~~
 
 상술한 GetX 패키지 설명에서 의도대로, BaseView는 UI 구성을, BaseController는 비즈니스 로직을 구성하는 책임을 맡아 두 모듈이 하나의 페이지 구조를 이룹니다.
@@ -786,7 +789,8 @@ class BaseController extends GetxController with GetSingleTickerProviderStateMix
 
 저는 보통 위의 기능들을 모두 포함하는 클래스를 만들어 사용합니다.
 
-특정 역할을 수행하면서, 앱 전역에서 사용되는 비즈니스 로직의 코드가 많아지면 위의 예시처럼 Manager 클래스를 만들어 사용합니다.
+특정 역할을 수행하면서, 앱 전역에서 사용되는 비즈니스 로직의 코드가 많아지면 위의 예시처럼 **Manager 클래스**를 만들어 사용합니다.
+
 
 ~~~dart
 class GlobalManager extends GetxService {
@@ -814,9 +818,11 @@ class GlobalManager extends GetxService {
 }
 ~~~
 
-Manager 클래스는 상술한 GetxService의 응용으로, 앱 전역에서 사용되는 특정 비즈니스 로직을 모아둔 클래스입니다.
+Manager 클래스는 상술한 GetxService를 상속한 클래스로, 앱 전역에서 사용되는 특정 비즈니스 로직을 모아둡니다.
 
 앱 데이터베이스 관리나, 네트워크 통신 관련 메소드를 모아둔 코드 등을 Manager로 작성한 후, BaseController에서 접근하도록 하면 코드의 응집도를 높일 수 있습니다.
+
+페이지 단위에서 공통적으로 사용되는 비즈니스 로직은 BaseController에, 앱 전역에서 공통적으로 사용되나 특정 기능을 책임지는 코드들을 Manager로 작성하여 BaseController에 추가하는 방식입니다.
 
 
 ~~~dart
@@ -845,14 +851,137 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BaseView<Controller extends BaseController> extends GetView<Controller> {
+  final GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
+  // AppLocalizations get appLocalization => AppLocalizations.of(Get.context!)!;
+
+  Widget body(BuildContext context);
+
+  Widget? appBar(BuildContext context);
+
+  Widget? bottomButton(BuildContext context) {
+    return null;
+  }
+
+  // 페이지 설정에 관한 매개변수
+  final bool isBackgroundImageEnable;
+  final bool resizeToAvoidBottomInset;
+  final bool isCanPop;
+  //isCanPop이 false라면 호출 가능한 함수입니다.
+  final Function()? onWillPop;
+  final Function()? onAnyTap;
+
+  // 사이즈 설정
+  double appBarHeight = 48.s;
+  double bottomButtonHeight = 72.s;
+  double bodyHeight = Get.height;
+
+  BaseView({
+    super.key,
+    this.isBackgroundImageEnable = false,
+    this.resizeToAvoidBottomInset = true,
+    this.isCanPop = true,
+    this.onWillPop,
+    this.onAnyTap,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Base Module')),
-      body: Center(child: Text('Base Module')),
+    return Stack(
+      children: [
+        AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.white,
+            statusBarIconBrightness: Brightness.dark,
+            systemStatusBarContrastEnforced: false,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: WillPopScope(
+              key: key,
+              onWillPop: isCanPop? ()=> controller.goBack() : () async => onWillPop!(),
+              child: Scaffold(
+                resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+                backgroundColor: pageBackgroundColor(),
+                key: globalKey,
+                floatingActionButton: floatingActionButton(),
+                body: Obx(() => pageContent(context)),
+                drawer: drawer(),
+              ),
+            ),
+          ),
+        ),
+        Obx(
+          () => controller.pageState == PageState.loading
+              ? _showLoading(controller.loadingType) : Container(),
+        ),
+      ],
     );
   }
-}
+
+  Widget pageContent(BuildContext context) {
+
+    Widget? topAppBar = appBar(context);
+    Widget? bottomBtn = bottomButton(context);
+
+    if(!controller.isKeyboardAutoLayout && MediaQuery.of(context).viewInsets.bottom > 0) {
+      bottomBtn = null;
+    }
+
+    // 상단영역 크기
+    double topHeight = AppUIConfig.safeAreaTop;
+    if(topAppBar != null) {
+      topHeight = topHeight + appBarHeight;
+    }
+    // 하단영역 크기
+    double botHeight = AppUIConfig.safeAreaBottom;
+    if(bottomBtn != null) {
+      botHeight = botHeight + bottomButtonHeight;
+    }
+
+    // 컨텐츠영역 Body 영역 구하기
+    bodyHeight = Get.height - topHeight - botHeight;
+
+
+    return InkWell(
+      onTap: () {
+        onAnyTap;
+        FocusScope.of(context).unfocus();
+      },
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            child: topAppBar ?? Container(),
+          ),
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                  color: Palette.bgWhite,
+                  margin: EdgeInsets.only(top: topHeight, bottom: botHeight),
+                  height: bodyHeight,
+                  child: body(context)
+              ),
+              Container(
+                color: Palette.bgWhite,
+                height: botHeight,
+                child: bottomBtn ?? Container(),
+              ),
+            ],
+          ),
+        ],
+      )
+    );
+  }
+
+  Color pageBackgroundColor() {
+    return Colors.transparent;
+  }
+
+
 ~~~
 
 ~~~dart
@@ -866,9 +995,3 @@ class HomeView extends BaseView<HomeController> {
   }
 }
 ~~~
-
-
-
-### UI
-
-### Repository
