@@ -29,22 +29,8 @@ layout: default
     {% endif %}
   </header>
 
-  <div class="post-container">
-    <div class="post-content">
-      {{ content }}
-    </div>
-    
-    <div class="post-toc">
-      <div class="toc">
-        {% assign headers = content | split: '<h3' %}
-        {% for header in headers offset: 1 %}
-          {% assign title = header | split: '</h3>' | first %}
-          {% assign clean_title = title | split: '>' | last %}
-          {% assign header_id = clean_title | strip | downcase | replace: ' ', '-' %}
-          <a href="#{{ header_id }}" class="toc-link h3">{{ clean_title }}</a>
-        {% endfor %}
-      </div>
-    </div>
+  <div class="post-content">
+    {{ content }}
   </div>
 
   <div class="post-recommendations">
@@ -140,31 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
           modal.remove();
         }, 300);
       });
-    });
-  });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const tocLinks = document.querySelectorAll('.toc-link');
-  const headers = document.querySelectorAll('h3');
-  
-  // 스크롤 이벤트에서 현재 보이는 섹션 하이라이트
-  window.addEventListener('scroll', () => {
-    let currentSection = '';
-    headers.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (window.scrollY >= sectionTop - 100) {
-        currentSection = section.id;
-      }
-    });
-    
-    tocLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href').slice(1) === currentSection) {
-        link.classList.add('active');
-      }
     });
   });
 });
