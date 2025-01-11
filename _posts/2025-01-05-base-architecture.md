@@ -560,7 +560,7 @@ dev_dependencies:
 flutter pub run build_runner build
 ~~~
 
-사용할 컨버터와 DAO, 엔티티를 정의하고, build_runner를 통해 데이터베이스 파일을 생성합니다.
+그리고 build_runner를 통해 데이터베이스 파일을 생성하면, Floor 데이터베이스를 사용할 준비가 완료됩니다.
 
 각 패키지의 주요 기능과 역할에 대한 소개는 여기까지입니다.
 
@@ -576,8 +576,6 @@ GetX는 건물의 튼튼한 **골자와 뼈대**를, Floor는 건물을 사람�
 
 본격적인 베이스 아키텍처 설명에 앞서, 제가 소개하는 구조는 현업에서 프로젝트를 진행하며 저와 팀원 분들의 작업 환경에 맞추어 설계되어 당연하게도 모든 프로젝트에 완벽하게 기능하는 구조는 아닙니다.
 
-다만 다음과 같은 요구사항에 맞추어 개발되었기에, 저희와 목적이 비슷한 분들에게는 참고가 될 수 있습니다.
-
 - 10명 이하의 팀원으로 구성되어, 10개에서 30개 이하의 페이지를 구성하는 **소, 중규모 프로젝트 대상**
 - 디자이너와 협업하며, 대다수의 페이지가 특정 스타일 가이드를 따르는 프로젝트
 - 비즈니스 로직과 데이터베이스 통신이 필요하나, **앱에 저장되는 영역과 View Model 영역이 혼합되어 있는 프로젝트**
@@ -585,9 +583,291 @@ GetX는 건물의 튼튼한 **골자와 뼈대**를, Floor는 건물을 사람�
 - 유저 데이터 등 **전역적으로 활용하는 데이터가 있는 프로젝트(플랫폼 앱과 같은)**
 - 대다수의 페이지 모듈이 비슷한 생명주기와 구조를 가지는 프로젝트
 
+다만 위과 같은 요구사항에 맞추어 개발되었기에, 저희와 목적이 비슷한 분들에게는 참고가 될 수 있습니다.
+
 ### Base Module
 
-### Manager
+베이스 아키텍처는 비슷한 구조의 여러 뷰를 사용할 때 각 페이지에 일관성과 개발 편의성을 제공하는 것이 주 목적입니다.
+
+따라서, 일관성있는 모듈 구조를 위해 **BaseView**와 **BaseController**를 사용합니다.
+
+~~~dart
+//BaseView는 모든 뷰의 기본 구조를 정의하는 클래스입니다.
+//GetxView를 상속받아 모든 뷰에서 사용할 수 있도록 합니다.
+abstract class BaseView<Controller extends BaseController> extends GetView<Controller> {
+
+  final GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // 상세한 UI 구성은 후술...
+    return Scaffold(
+      appBar: AppBar(title: Text('Base Module')),
+      body: Center(child: Text('Base Module')),
+    );
+  }
+}
+~~~
+
+~~~dart
+//BaseController는 모든 컨트롤러의 기본 구조를 정의하는 클래스입니다.
+//GetxController를 상속받아 모든 컨트롤러에서 사용할 수 있도록 합니다.
+class BaseController extends GetxController with GetSingleTickerProviderStateMixin {
+  // 상세한 비즈니스 로직은 후술...
+  @override
+  void onInit() {
+    super.onInit();
+  }
+}
+~~~
+
+BaseView는 GetxView를, BaseController는 GetxController를 상속받아 모든 페이지에서 Getx 구조를 일관성 있게 사용할 수 있습니다.
+
+~~~
+lib/
+  pages/
+    home/
+      home_view.dart # BaseView
+      home_controller.dart # BaseController
+    login/
+      login_view.dart # BaseView
+      login_controller.dart # BaseController
+~~~
+
+상술한 GetX 패키지 설명에서 의도대로, BaseView는 UI 구성을, BaseController는 비즈니스 로직을 구성하는 책임을 맡아 두 모듈이 하나의 페이지 구조를 이룹니다.
+
+#### BaseController
+
+베이스 모듈 구조의 사용 의도를 말씀드렸으니, BaseController부터 실제로 제가 사용하는 구조와 사용 예시를 보여드리겠습니다.
+
+~~~dart
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+
+enum PageState {
+  defaultState,
+  loading,
+  success,
+  failed,
+  updated,
+  created,
+  noInternet,
+  message,
+  unAuthorized,
+}
+
+enum DevicePlatform {
+  android,
+  ios,
+  ipadOs,
+  web,
+  desktop,
+}
+
+class BaseController extends GetxController with GetSingleTickerProviderStateMixin {
+
+  final GlobalManager global; //여러 곳에서 쓰이므로, 명칭 단순화. (제 취향입니다)
+  //싱글톤 패턴으로 생성된 GetxService(Manager)를 주입받습니다.
+  BaseController() : global = Get.find<GlobalManager>();
+
+  //만약 여러개의 매니저를 사용한다면, 파라미터로 추가합니다.
+  // final NetWorkManager network;
+  // final UserManager user;
+  //BaseController() : 
+  //  global = Get.find<GlobalManager>(), 
+  //  network = Get.find<NetworkManager>(), 
+  //  user = Get.find<UserManager>();
+  //  ...
+
+
+  //Logger 패키지 접근.
+  final logger = Logger();
+
+  //크로스 플랫폼 분기처리를 위한 변수.
+  Rx<DevicePlatform> devicePlatform = DevicePlatform.android.obs;
+
+  //페이지 상태 변수.
+  Rx<PageState> pageState = PageState.defaultState.obs;
+
+  //페이지 상태 변수.
+  RxBool isRefresh = false.obs;
+
+    // // 키보드 보일때 안보일떄 화면 처리를 위해
+  late StreamSubscription keyboardSubscription;
+  final RxBool _isKeyboardVisible = false.obs; // 키보드 보임여부
+  bool get isKeyboardVisible => _isKeyboardVisible.value;
+
+  // 키보드 상태에 따른 자동 레이아웃 변경 여부
+  final RxBool _isKeyboardAutoLayout = true.obs;
+  bool get isKeyboardAutoLayout => _isKeyboardAutoLayout.value;
+  set isKeyboardAutoLayout(bool val) => _isKeyboardAutoLayout.value = val;
+
+  //로딩 상태. 로딩 유틸리티와 조합.
+  bool isShowLoading = false;
+  LoadingType loadingType = LoadingType.normal;
+
+    bool refreshPage(bool refresh) => _refreshController(refresh);
+
+  //Controls page state
+  final _pageSateController = PageState.defaultState.obs;
+
+  PageState get pageState => _pageSateController.value;
+
+  PageState updatePageState(PageState state) => _pageSateController(state);
+
+  PageState resetPageState() => _pageSateController(PageState.defaultState);
+
+  PageState showLoading({LoadingType type = LoadingType.normal}) {
+    if (!isShowLoading) {
+      isShowLoading = true;
+      loadingType = type;
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      updatePageState(PageState.loading);
+      // });
+
+      return PageState.loading;
+    }
+
+    //page state return.
+    return pageState;
+  }
+
+  PageState hideLoading() {
+    if (isShowLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isShowLoading = false;
+        resetPageState();
+      });
+
+      return PageState.defaultState;
+    }
+
+    return pageState;
+  }
+
+
+  //뒤로가기 버튼 클릭 시 호출되는 메서드.
+  Future<bool> goBack() {
+    Get.back();
+
+    return Future.value(true);
+  }
+
+  bool isCanSwipeBack() {
+    if (!Platform.isAndroid) {
+      /// iOS
+      return true;
+    }
+
+    /// Android
+    return false;
+  }
+
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+}
+~~~
+
+베이스 아키텍처의 사용 방법은 프로젝트의 규모가 방향성에 따라 갈리겠지만, 일반적으로 BaseController는 프로젝트의 모든 페이지가 공통적으로 사용하는 비즈니스 로직을 담고 있습니다.
+
+- 페이지 상태 관리
+- 크로스 플랫폼 분기처리
+- 네트워크 관리
+- 자주 사용되는 유틸리티 함수 접근(Logger 등)
+- 데이터베이스 관리
+- 디바이스 정보 관리
+- 키보드 관리
+- 로딩 관리
+- 메시지 관리
+- 유저 관리
+
+저는 보통 위의 기능들을 모두 포함하는 클래스를 만들어 사용합니다.
+
+특정 역할을 수행하면서, 앱 전역에서 사용되는 비즈니스 로직의 코드가 많아지면 위의 예시처럼 Manager 클래스를 만들어 사용합니다.
+
+~~~dart
+class GlobalManager extends GetxService {
+  //접근 편의를 위해 정적 메서드를 정의합니다.
+  static GlobalManager get to => Get.find<GlobalManager>();
+  
+  // 전역적으로 사용되는 비즈니스 로직 작성.
+  // 저는 보통 GlobalManager에 Floor 데이터베이스를 접근하는 코드를 작성합니다.
+  late final AppDatabase db;
+
+  //앱 내 모든 DAO를 접근하기 위한 변수
+  UserDao get userDao => db.userDao;
+
+  Future<void> init() async {
+    db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    init();
+  }
+
+  // 종료될 일이 없으므로, onClose는 작성하지 않습니다.
+}
+~~~
+
+Manager 클래스는 상술한 GetxService의 응용으로, 앱 전역에서 사용되는 특정 비즈니스 로직을 모아둔 클래스입니다.
+
+앱 데이터베이스 관리나, 네트워크 통신 관련 메소드를 모아둔 코드 등을 Manager로 작성한 후, BaseController에서 접근하도록 하면 코드의 응집도를 높일 수 있습니다.
+
+
+~~~dart
+class MyPageController extends BaseController {
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  Future<void> updateUser() async {
+    // 글로벌 매니저에 선언된 userDao를 접근하여, DAO가 지닌 메소드를 호출.
+    // 글로벌 매니저에 정의된 user 변수를 업데이트. 앱 전역에 유저의 상태가 업데이트됩니다.
+    global.user = await global.userDao.updateUser(user);
+  }
+}
+~~~
+
+실제 사용 예시는 위와 같을수 있습니다.
+
+
+
+#### BaseView
+
+~~~dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class BaseView<Controller extends BaseController> extends GetView<Controller> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Base Module')),
+      body: Center(child: Text('Base Module')),
+    );
+  }
+}
+~~~
+
+~~~dart
+class HomeView extends BaseView<HomeController> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Home')),
+      body: Center(child: Text('Home')),
+    );
+  }
+}
+~~~
+
+
 
 ### UI
 
