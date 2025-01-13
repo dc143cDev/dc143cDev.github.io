@@ -843,8 +843,11 @@ class MyPageController extends BaseController {
 실제 사용 예시는 위와 같을수 있습니다.
 
 
-
 #### BaseView
+
+다음은 BaseView입니다.
+
+**BaseView**는 **BaseController**를 상속받아 모든 페이지에 사용되는 UI 영역의 설정을 담당합니다.
 
 ~~~dart
 import 'package:flutter/material.dart';
@@ -980,18 +983,78 @@ class BaseView<Controller extends BaseController> extends GetView<Controller> {
   Color pageBackgroundColor() {
     return Colors.transparent;
   }
-
-
 ~~~
 
+BaseView 역시 BaseController와 마찬가지로 필요로 하는 앱의 규모나 방향성에 따라 기능을 다르게 설정할 수 있지만, 저의 경우에는 다음과 같은 기능들로 구성하여 사용하고 있습니다:
+
+- 페이지 상태 관리. Loading 상태를 예로 들면 Loading 상태 돌입 시 타입에 따라 화면에 보이는 로딩을 설정합니다. (전체 화면 로딩, 중앙 등)
+- AppBar, body, bottomButton 등의 앱에서 자주 사용되는 영역 설정. AppBar와 bottomButton은 null을 허용하여 필요에 따라 오버라이드 할 수 있도록 합니다.
+- 키보드 상태에 따른 자동 레이아웃 변경 여부. 키보드가 보일때 안보일때 화면 처리를 위해 사용합니다.
+- 스테이터스 바 컬러, 기본 배경 컬러 및 패딩으로 디자이너와 협업할 경우의 앱 스타일 설정.
+
+
 ~~~dart
+//BaseController를 상속받은 HomeController가 주입된 BaseView
 class HomeView extends BaseView<HomeController> {
+  // null 허용. 앱바가 존재하지 않는 뷰를 대비
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Home')),
-      body: Center(child: Text('Home')),
+  Widget? appBar(BuildContext context) {
+    // 앱바나 바텀버튼 등은 컴포넌트로 분리하여 커스텀 위젯을 사용하면 편리합니다.
+    return CAppBar(title: Text('Home'), type: AppBarType.back);
+  }
+
+  @override
+  Widget body(BuildContext context) {
+    return Column(
+      // 페이지 구성 위젯 등... 예시.
+      children: [
+        Text('Home'),
+        Banner(),
+        UserCircle(),
+      ],
+    );
+  }
+
+  // null 허용. 바텀버튼이 존재하지 않는 뷰를 대비
+  @override
+  Widget? bottomButton(BuildContext context) {
+    // 앱바나 바텀버튼은 컴포넌트로 분리하여 커스텀 위젯을 사용하면 편리합니다.
+    return CBottomButton(
+      onPressed: () {
+        controller.onTapBottomButton();
+      },
+      child: Text('다음'),
+    );
+  }
+
+
+  // 페이지 구성 위젯 등... 예시.
+  Widget Banner() {
+    return Container(
+      color: Palette.bgWhite,
+      //상태 변화 감지 예시.
+      child: Obx(() => Text(controller.bannerText.value)),
+    );
+  }
+
+  Widget UserCircle() {
+    return Container(
+      color: Palette.bgWhite,
+      child: Text('UserCircle'),
     );
   }
 }
 ~~~
+
+사용 예시는 위와 같을수 있습니다.
+
+사용 여부에 따라 BaseView에 등록된 Appbar, BottomButton 등을 오버라이드 하면, BaseView에서 지정된 패딩 값과 위치에 따라 화면이 구성됩니다.
+
+body 영역에는 페이지 구성 위젯들을 작성하면 됩니다.
+
+BaseView는 GetX 구조와 유사하게 BaseController를 제네릭 타입으로 주입받으므로, 기존 GetX 구조와 동일한 상태관리를 사용할 수 있습니다.
+
+### 마치며
+
+이번 포스트에서는 저의 프로젝트에서 사용하는 베이스 아키텍처를 소개해드렸습니다.
+
