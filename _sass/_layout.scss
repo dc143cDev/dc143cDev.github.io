@@ -17,20 +17,33 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
+  //border-bottom: 1px solid #eee;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;  // 추가
+  align-items: center;  // 수정
+  width: 100%;
 }
 
 .masthead-title {
-  margin-bottom: 0;
-  margin-top: 0;
-  font-weight: 900;
+  margin-bottom: 1rem;
+  text-align: center;
+  white-space: pre-line;
+  line-height: 1.4;
+  letter-spacing: -0.03em;
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
   
-  a {
-    color: var(--title-color);
+  .site-title {
     text-decoration: none;
+    color: var(--body-color);
+    
+    .title-accent {
+      color: #dc143c;
+    }
+  }
+  
+  &:hover {
+    transform: scale(1.05);
   }
 }
 
@@ -89,4 +102,117 @@
     padding-right: 0;
     margin-bottom: 2rem;
   }
+}
+
+.main-nav {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.nav-item {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--gray-600);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: #dc143c;
+    transition: width 0.2s ease;
+  }
+
+  &:hover {
+    color: #dc143c;
+    
+    &::after {
+      width: 100%;
+    }
+  }
+
+  &.active {
+    color: #dc143c;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-nav {
+    gap: 1.5rem;
+  }
+  
+  .nav-item {
+    font-size: 0.9rem;
+  }
+}
+
+.posts {
+  margin-top: 2rem;
+  border-top: 1px solid #eee;
+  padding-top: 2rem;
+}
+
+.post-summary {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(220, 20, 60, 0.03);
+    transform: translateY(-2px);
+  }
+}
+
+.post-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  
+  a {
+    color: var(--title-color);
+    text-decoration: none;
+    
+    &:hover {
+      color: #dc143c;
+    }
+  }
+}
+
+.post-date {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  margin-bottom: 0.75rem;
+}
+
+.post-excerpt {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--body-color);
+}
+
+@media (max-width: 768px) {
+  .post-summary {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .post-title {
+    font-size: 1.3rem;
+  }
+}
+
+.bentham-regular {
+  font-family: "Bentham", serif;
+  font-weight: 400;
+  font-style: normal;
 }

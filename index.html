@@ -3,20 +3,118 @@ layout: default
 title: Home
 ---
 
-<div class="posts">
-  {% for post in site.posts limit:5 %}
-    <article class="post-summary">
-      <h3 class="post-title">
-        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      </h3>
-      <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
-      <p class="post-excerpt">
-        {% if post.subtitle %}
-          {{ post.subtitle }}
-        {% else %}
-          {{ post.excerpt | strip_html | truncatewords: 50 }}
+<div class="posts-container">
+  {% assign posts = site.posts | sort: 'date' | reverse %}
+  {% for post in posts %}
+    <article class="post-card">
+      <h2 class="post-title">
+        <a href="{{ post.url }}">{{ post.title }}</a>
+      </h2>
+      <div class="post-meta">
+        <time>{{ post.date | date: "%Y. %m. %d" }}</time>
+        <span class="meta-dot">·</span>
+        {% if post.read_time %}
+          <span class="read-time">{{ post.read_time }} min</span>
         {% endif %}
-      </p>
+      </div>
+      {% if post.tags %}
+        <div class="post-tags">
+          {% for tag in post.tags %}
+            <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if post.subtitle %}
+        <p class="post-subtitle">{{ post.subtitle }}</p>
+      {% endif %}
     </article>
   {% endfor %}
 </div>
+
+<style>
+.posts-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.post-card {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.post-card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.post-title {
+  margin: 0 0 1rem;
+}
+
+.post-title a {
+  color: var(--heading-color);
+  text-decoration: none;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+  border-bottom: none;
+}
+
+.post-title a:hover {
+  color: #dc143c;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.meta-dot {
+  font-weight: bold;
+  color: var(--gray-400);
+}
+
+.read-time {
+  color: var(--gray-600);
+}
+
+.post-tags {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.tag {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.tag:hover {
+  color: #dc143c;
+}
+
+.post-subtitle {
+  color: var(--body-color);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+}
+</style>
