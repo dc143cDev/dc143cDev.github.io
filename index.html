@@ -43,6 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const tags = document.querySelectorAll('.tags-filter .tag');
   const posts = document.querySelectorAll('.post-card');
   
+  // 초기 페이지 로드시 애니메이션 적용
+  posts.forEach(post => {
+    post.classList.remove('hidden');
+    post.classList.add('visible');
+  });
+  
   tags.forEach(tag => {
     tag.addEventListener('click', function() {
       const selectedTag = this.dataset.tag;

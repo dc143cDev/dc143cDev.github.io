@@ -1,13 +1,33 @@
 ---
 layout: page
-title: About
+title: 
 ---
 
-<p class="message">
-  Hey there! This page is included as an example. Feel free to customize it for your own use upon downloading. Carry on!
-</p>
+<div class="about-container">
+  <div class="about-content">
+    <div class="about-image-wrapper">
+      <img src="{{ site.baseurl }}/assets/profile.jpeg" alt="Profile" class="about-image">
+    </div>
+    <div class="about-text">
+      <h1>WHOAMI</h1>
+      <p>
+        {{ site.author.bio }}
+      </p>
+      <p>
+        Dart를 주력으로 사용하며,<br>
+        iOS, Android 네이티브 개발 경험이 있습니다.
+      </p>
+      <p>
+        제가 좋아하는 분야의, 사람들이 원하는 도구를 만들기 위해 노력합니다.
+      </p>
+      <div class="about-links">
+        <a href="mailto:{{ site.author.email }}">Contact</a>
+      </div>
+    </div>
+  </div>
+</div>
 
-In the novel, *The Strange Case of Dr. Jekyll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
+<!-- In the novel, *The Strange Case of Dr. Jekyll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
 
 There are currently two themes built on Poole:
 
@@ -26,4 +46,4 @@ Some fun facts about the setup of this project include:
 
 Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/poole/poole/issues/new) or [ask me on Twitter](https://twitter.com/mdo).
 
-Thanks for reading!
+Thanks for reading! -->
