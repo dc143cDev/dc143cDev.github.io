@@ -213,7 +213,7 @@
     cursor: pointer;
     transition: color 0.2s ease;
     background: none;
-    padding: 0;
+    padding: 0.5rem 0.8rem;
     border: none;
     
     &:hover {
@@ -711,5 +711,41 @@
     color: var(--body-color);
     font-size: 0.95rem;
     line-height: 1.6;
+  }
+}
+
+.post-card {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.5s ease;
+  transform-origin: center;
+  opacity: 1;
+  transform: scale(1);
+  
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+  
+  &.hidden {
+    display: none !important;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  
+  &.visible {
+    display: block !important;
+    animation: fadeInScale 0.5s ease forwards;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

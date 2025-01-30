@@ -49,7 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (this.classList.contains('active')) {
         this.classList.remove('active');
-        posts.forEach(post => post.style.display = 'block');
+        posts.forEach(post => {
+          post.classList.remove('hidden');
+          post.classList.add('visible');
+        });
       } else {
         tags.forEach(t => t.classList.remove('active'));
         this.classList.add('active');
@@ -57,9 +60,11 @@ document.addEventListener('DOMContentLoaded', function() {
         posts.forEach(post => {
           const postTags = post.dataset.tags.split(',');
           if (postTags.includes(selectedTag)) {
-            post.style.display = 'block';
+            post.classList.remove('hidden');
+            post.classList.add('visible');
           } else {
-            post.style.display = 'none';
+            post.classList.add('hidden');
+            post.classList.remove('visible');
           }
         });
       }
