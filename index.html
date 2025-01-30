@@ -4,9 +4,16 @@ title: Home
 ---
 
 <div class="posts-container">
+  <div class="tags-filter">
+    {% assign all_tags = site.posts | map: "tags" | compact | flatten | uniq | sort %}
+    {% for tag in all_tags %}
+      <span class="tag" data-tag="{{ tag | downcase }}">{{ tag }}</span>
+    {% endfor %}
+  </div>
+
   {% assign posts = site.posts | sort: 'date' | reverse %}
   {% for post in posts %}
-    <article class="post-card">
+    <article class="post-card" data-tags="{{ post.tags | join: ',' | downcase }}">
       <h2 class="post-title">
         <a href="{{ post.url }}">{{ post.title }}</a>
       </h2>
@@ -30,6 +37,36 @@ title: Home
     </article>
   {% endfor %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tags = document.querySelectorAll('.tags-filter .tag');
+  const posts = document.querySelectorAll('.post-card');
+  
+  tags.forEach(tag => {
+    tag.addEventListener('click', function() {
+      const selectedTag = this.dataset.tag;
+      
+      if (this.classList.contains('active')) {
+        this.classList.remove('active');
+        posts.forEach(post => post.style.display = 'block');
+      } else {
+        tags.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        posts.forEach(post => {
+          const postTags = post.dataset.tags.split(',');
+          if (postTags.includes(selectedTag)) {
+            post.style.display = 'block';
+          } else {
+            post.style.display = 'none';
+          }
+        });
+      }
+    });
+  });
+});
+</script>
 
 <style>
 .posts-container {

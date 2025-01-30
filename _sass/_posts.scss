@@ -201,27 +201,28 @@
 .tags-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 1rem;
   margin-bottom: 2rem;
   padding: 1rem 0;
   
   .tag {
     display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.9rem;
-    color: #dc143c;
-    background-color: rgba(220, 20, 60, 0.1);
+    font-size: 0.85rem;
+    color: var(--gray-600);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
+    background: none;
+    padding: 0;
+    border: none;
     
     &:hover {
-      background-color: rgba(220, 20, 60, 0.15);
+      color: #dc143c;
+      text-decoration: none;
     }
     
     &.active {
-      color: white;
-      background-color: #dc143c;
+      color: #dc143c;
     }
   }
 }
