@@ -18,7 +18,8 @@ title:
         iOS, Android 네이티브 개발 경험이 있습니다.
       </p>
       <p>
-        제가 좋아하는 분야의, 사람들이 원하는 도구를 만들기 위해 노력합니다.
+        제가 좋아하는 분야의,<br>
+        사람들이 원하는 도구를 만듭니다.
       </p>
       <div class="about-links">
         <a href="mailto:{{ site.author.email }}">Contact</a>

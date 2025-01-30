@@ -749,9 +749,17 @@
   transform-origin: center;
   background: var(--post-bg);
   border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
   
   &:hover {
     transform: translateY(-4px) scale(1.02);
+    
+    .post-title a {
+      color: #dc143c;
+    }
   }
   
   &.hidden {
@@ -761,6 +769,12 @@
   &.visible {
     display: block;
     animation: fadeInScale 0.4s ease forwards;
+  }
+  
+  .post-title a {
+    color: var(--heading-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
   }
 }
 
@@ -794,7 +808,7 @@
   }
   
   .about-image {
-    width: 100%;
+    width: 90%;
     height: 400px;
     object-fit: cover;
     border-radius: 0px;
@@ -802,7 +816,7 @@
     @media (max-width: 768px) {
       max-width: 300px;
       height: 300px;
-      margin: 0 auto 2rem;
+      margin: 0 auto 1rem;
     }
   }
   
@@ -820,6 +834,20 @@
       line-height: 1.8;
       margin-bottom: 1rem;
       color: var(--gray-600);
+    }
+
+    .about-links {
+      margin-top: 2rem;
+      
+      a {
+        color: var(--body-color);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: #dc143c;
+        }
+      }
     }
   }
 }
