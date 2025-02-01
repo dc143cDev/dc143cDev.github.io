@@ -754,11 +754,29 @@
   display: block;
   color: inherit;
   
-  &:hover {
-    transform: translateY(-4px) scale(1.02);
-    
-    .post-title a {
-      color: #dc143c;
+  .post-title a {
+    color: var(--heading-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-4px) scale(1.02);
+      
+      .post-title a {
+        color: #dc143c;
+      }
+    }
+  }
+  
+  @media (hover: none) {
+    &:active {
+      transform: translateY(-2px) scale(1.01);
+      
+      .post-title a {
+        color: #dc143c;
+      }
     }
   }
   
@@ -769,12 +787,6 @@
   &.visible {
     display: block;
     animation: fadeInScale 0.4s ease forwards;
-  }
-  
-  .post-title a {
-    color: var(--heading-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
   }
 }
 
