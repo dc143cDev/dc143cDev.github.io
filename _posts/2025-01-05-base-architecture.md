@@ -2,7 +2,7 @@
 layout: post
 title: "Flutter 베이스 아키텍처로 일 쉽게 만들기"
 date: 2025-01-05
-tags: [Flutter, Architecture, GetX, Floor]
+tags: [Flutter, Architecture]
 read_time: 30
 subtitle: "Getx와 Floor를 활용하여 실전 업무에 적용할 수 있는 아키텍처를 만들어봅니다."
 ---
