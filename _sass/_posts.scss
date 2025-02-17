@@ -870,3 +870,18 @@
     }
   }
 }
+
+.post-content {
+  img {
+    max-width: 100%;
+    margin: 2rem auto;  // 상하 여백 추가
+    display: block;     // 블록 레벨 요소로 변경
+    
+    &[src*=".gif"] {   // gif 파일에만 적용되는 스타일
+      width: 80%;      // 너비를 80%로 제한
+      margin: 3rem auto; // gif 파일의 여백 증가
+      border-radius: 8px; // 모서리 둥글게
+  
+    }
+  }
+}
