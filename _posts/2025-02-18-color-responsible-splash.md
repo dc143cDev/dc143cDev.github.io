@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "이미지 색상에 반응하는 컨테이너 구현하기"
+title: "Apple Music 스타일 앨범 커버 인터렉션 구현하기"
 date: 2025-02-18
 tags: [Flutter, UI/UX, Animation]
 read_time: 10
-subtitle: "이미지의 색상을 추출하여 반응하는 그라데이션 컨테이너 UI를 구현해봅니다."
+subtitle: "이미지의 색상과 음악에 반응하는 컨테이너 UI를 구현해봅니다."
 ---
 
 ## 개요
@@ -29,7 +29,7 @@ subtitle: "이미지의 색상을 추출하여 반응하는 그라데이션 컨�
 </figure>
 
 
-인사동이던 압구정 외곽이던, 그림을 판매하는 갤러리들의 인테리어는 모두 무채색이나 깔끔한 가구 배치로 방문객들에게 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
+인사동 쌈짓길부터 압구정 외곽까지, 그림을 판매하는 갤러리들의 인테리어는 대개 무채색이나 깔끔한 가구 배치로 방문객들에게 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
 
 애플의 디자이너도 비슷한 생각을 가지고 있는 것 같습니다.
 
@@ -49,7 +49,7 @@ subtitle: "이미지의 색상을 추출하여 반응하는 그라데이션 컨�
 
 
 <figure>
-  <img src="/assets/images/post-250218-03.jpg" alt="애플 뮤직 앱 앨범 커버 반응형 컨테이너" class="screenshot">
+  <img src="/assets/images/post-250218-03.png" alt="애플 뮤직 앱 앨범 커버 반응형 컨테이너" class="screenshot">
   <figcaption>출처-애플 뮤직 앱</figcaption>
 </figure>
 
