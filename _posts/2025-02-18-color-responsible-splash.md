@@ -29,7 +29,7 @@ subtitle: "이미지의 색상을 추출하여 반응하는 컨테이너 UI를 �
 </figure>
 
 
-인사동 쌈짓길부터 압구정 외곽까지, 그림을 판매하는 갤러리들의 인테리어는 대개 무채색이나 깔끔한 가구, 동선 배치로 방문객로 하여금 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
+인사동 쌈짓길부터 압구정 외곽까지, 그림을 판매하는 갤러리들의 인테리어는 대개 무채색이나 깔끔한 가구, 동선 배치로 방문객들로 하여금 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
 
 애플의 디자이너도 비슷한 생각을 가지고 있는 것 같습니다.
 
@@ -205,10 +205,9 @@ imageStream.removeListener(listener);
 
 첫 번째 과정은 이미지 소스를 분석하는 것입니다.
 
-Flutter의 ImageProvider 시스템을 활용하여 다양한 소스(asset, network, file 등)의 이미지를 일관되게 처리
-Completer 패턴으로 비동기 이미지 로딩을 처리합니다.
+Flutter의 ImageProvider 시스템을 활용하여 다양한 소스(asset, network, file 등)의 이미지를 일관되게 입력 받고, Completer 패턴으로 비동기 이미지 로딩을 처리합니다.
 
-에러 핸들링을 통한 안정적인 이미지 로딩로 제공하도록 하고 있습니다.
+에러 핸들링을 통한 안정적인 이미지 로딩을 제공하도록 하고 있습니다.
 
 
 #### 색상 정보 추출
@@ -265,10 +264,10 @@ final light = colors.first;
 final dark = colors.last;
 ~~~
 
-사람의 눈은 녹색에 더 민감하게 반응합니다.
+우리의 눈은 녹색에 더 민감하게 반응합니다.
 따라서 자연스러운 색상 추출을 위해 3원색의 색상 중 청색광을 최대한 줄이고, 녹색의 비중을 높히도록 가중치를 적용합니다.
 
-추출한 색상을 바탕으로, 밝은 색상, 어두운 색상, 중간 톤(그중에서도 Primary, secondart, tertiary) 로 구분된 색상 팔레트를 만들어냅니다.
+추출한 색상을 바탕으로, 밝은 색상, 어두운 색상, 중간 톤(그중에서도 Primary, secondart, tertiary) 로 구성된 색상 팔레트를 만들어냅니다.
 
 
 ## 컬러 팔레트 활용하기...?
@@ -292,21 +291,154 @@ final dark = colors.last;
 
 허나 색상 추출 코드에서는 중간의 그래프 형상 포인트 그래픽의 하얀색마저 추출해버려, 마치 판다 무늬같은 배경이 생성될 가능성이 존재합니다.
 
+## 컬러 팔레트의 색감을 판별하기
 ~~~dart
-(컬러 팔레트 성격별 enum 코드)
-~~~
-~~~dart
-(컬러 팔레트를 입력하면 위 enum 값을 산정해내는 코드)
+/// 아우라 색상 특성 enum
+enum AuraColorCharacteristic {
+  /// 생동감 있는 색상 (원색)
+  VIVID,
+
+  /// 그레이스케일 (무채색)
+  GRAYSCALE,
+
+  /// 어두운 톤
+  DARK,
+
+  /// 밝은 톤
+  BRIGHT,
+
+  /// 중간 톤
+  MEDIUM,
+}
 ~~~
 
-이러한 문제를 해결하기 위해서는 컬러 팔레트의 성격을 분별하기 위해, 
+~~~dart
+/// 색상 팔레트의 특성 판별
+AuraColorCharacteristic _determineColorCharacteristic() {
+  // HSL 색상 공간 기반 분석 (색상, 채도, 명도)
+  final primaryHSL = HSLColor.fromColor(colorPalette.primary);
+  final secondaryHSL = HSLColor.fromColor(colorPalette.secondary);
+  final tertiaryHSL = HSLColor.fromColor(colorPalette.tertiary);
+  final lightHSL = HSLColor.fromColor(colorPalette.light);
+  final darkHSL = HSLColor.fromColor(colorPalette.dark);
 
+  // 평균 채도 계산
+  final avgSaturation = (primaryHSL.saturation + 
+                        secondaryHSL.saturation + 
+                        tertiaryHSL.saturation) / 3;
+
+  // 평균 명도 계산
+  final avgLightness = (primaryHSL.lightness + 
+                       secondaryHSL.lightness + 
+                       tertiaryHSL.lightness + 
+                       lightHSL.lightness) / 4;
+
+  // 명도 범위 계산 (최대-최소)
+  final lightnessRange = lightHSL.lightness - darkHSL.lightness;
+
+  // 채도 임계값 (이 값보다 낮으면 그레이스케일로 간주)
+  const saturationThreshold = 0.15;
+
+  // 그레이스케일 판별: 채도가 낮은 경우
+  if (avgSaturation < saturationThreshold) {
+    return AuraColorCharacteristic.GRAYSCALE;
+  }
+
+  // 생동감 판별: 채도가 높고 명도 범위가 넓은 경우
+  if (avgSaturation > 0.5 && lightnessRange > 0.5) {
+    return AuraColorCharacteristic.VIVID;
+  }
+
+  // 어두움 판별: 평균 명도가 낮은 경우
+  if (avgLightness < 0.35) {
+    return AuraColorCharacteristic.DARK;
+  }
+
+  // 밝음 판별: 평균 명도가 높은 경우
+  if (avgLightness > 0.65) {
+    return AuraColorCharacteristic.BRIGHT;
+  }
+
+  // 기본값: 중간 톤
+  return AuraColorCharacteristic.MEDIUM;
+}
+~~~
+
+이러한 문제를 해결하기 위해서는 컬러 팔레트가 어떠한 구성으로 이루어져 있는지(비비드한 색감인지, 무채색 계열인지, 중간 톤인지 등등) 판별하기 위한 별도의 로직이 필요합니다.
+
+위의 코드를 HSL 색상 공간을 사용하여 팔레트의 특성을 분석하게 되며, 과정은 다음과 같습니다:
+1. 팔레트 색상들의 HSL 값을 계산합니다.
+2. 평균 채도와 명도를 계산합니다.
+3. 명도 범위(가장 밝은 색과 가장 어두운 색의 차이)를 계산합니다.
+4. 다음 규칙에 따라 색상 특성을 판별합니다:
+- 채도가 매우 낮으면 **GRAYSCALE**
+- 채도가 높고 명도 범위가 넓으면 **VIVID**
+- 평균 명도가 낮으면 **DARK**
+- 평균 명도가 높으면 **BRIGHT**
+- 그 외의 경우는 **MEDIUM**
+
+~~~dart
+switch (colorCharacteristic) {
+  case AuraColorCharacteristic.VIVID:
+    // 생생한 테마: 생동감 있는 색상만 사용, 그레이스케일 완전 제거
+    colors.add(colorPalette.primary);
+    colors.add(colorPalette.secondary);
+    colors.add(colorPalette.tertiary);
+
+    // 추가 생동감 있는 색상 믹스
+    colors.add(Color.lerp(colorPalette.primary, colorPalette.secondary, 0.3)!);
+    colors.add(Color.lerp(colorPalette.secondary, colorPalette.tertiary, 0.3)!);
+    colors.add(Color.lerp(colorPalette.tertiary, colorPalette.primary, 0.3)!);
+    // ... 더 많은 색상 믹스
+    break;
+
+  case AuraColorCharacteristic.GRAYSCALE:
+    // 그레이스케일 테마: 주로 그레이스케일 색상 사용
+    colors.add(colorPalette.primary);
+    colors.add(colorPalette.dark);
+    colors.add(colorPalette.light);
+
+    // 추가 그레이스케일 믹스
+    colors.add(Color.lerp(colorPalette.primary, colorPalette.dark, 0.5)!);
+    colors.add(Color.lerp(colorPalette.primary, colorPalette.light, 0.5)!);
+
+    // 색감 살짝 추가 (variety가 높을 때만)
+    if (variety > 0.7) {
+      colors.add(colorPalette.secondary.withOpacity(0.3));
+    }
+    break;
+
+  case AuraColorCharacteristic.DARK:
+    // 어두운 테마: 주로 어두운 색상 사용
+    colors.add(colorPalette.primary);
+    colors.add(colorPalette.dark);
+    colors.add(colorPalette.secondary);
+
+    // 추가 어두운 색상 믹스
+    colors.add(Color.lerp(colorPalette.primary, colorPalette.dark, 0.7)!);
+    colors.add(Color.lerp(colorPalette.secondary, colorPalette.dark, 0.7)!);
+
+    // 밝은 색상 살짝 추가 (variety가 높을 때만)
+    if (variety > 0.6) {
+      colors.add(Color.lerp(colorPalette.primary, colorPalette.light, 0.2)!);
+    }
+    break;
+
+  // ... BRIGHT 및 MEDIUM 특성에 대한 처리
+}
+~~~
+
+위의 코드는 추후 소개드릴 실제 UI 코드에서 활용되는 코드입니다.
+
+컬러 팔레트의 특성을 판별하게 되면, 비비드한 색감의 팔레트는 주요 컬러를 위주로 사용하고, 무채색 계열 팔레트는 주로 그레이스케일 색상을 사용하는 등- 색감에 따른 그라디언트 배경을 생성합니다.
+
+이를 통해 컬러 팔레트의 색감별로 구성 컬러들을 조금 더 자연스럽게 배정하고, 색감에 따라 지향하는 UI를 더 세밀하게 조정할수 있습니다.
 
 
 
 ## 그라디언트 배경 생성하기
 
-이제 이미지로부터 색상을 추출하는 과정을 소개했으니, 직접 배경으로 그려볼 차례입니다.
+이제는 진짜로 배경 UI를 구현해볼 차례입니다.
 
 애플 뮤직 스타일의 배경을 구현하기 위해서는, 다음의 요소들이 필요합니다.
 
