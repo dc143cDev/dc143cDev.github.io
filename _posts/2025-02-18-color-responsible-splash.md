@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "Apple Music 스타일 앨범 커버 인터렉션 구현하기"
+title: "Apple Music 스타일 앨범 커버 UI/UX 구현하기"
 date: 2025-02-18
 tags: [Flutter, UI/UX, Animation]
 read_time: 10
-subtitle: "이미지의 색상과 음악에 반응하는 컨테이너 UI를 구현해봅니다."
+subtitle: "이미지의 색상을 추출하여 반응하는 컨테이너 UI를 구현해봅니다."
 ---
 
 ## 개요
@@ -29,7 +29,7 @@ subtitle: "이미지의 색상과 음악에 반응하는 컨테이너 UI를 구�
 </figure>
 
 
-인사동 쌈짓길부터 압구정 외곽까지, 그림을 판매하는 갤러리들의 인테리어는 대개 무채색이나 깔끔한 가구 배치로 방문객들에게 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
+인사동 쌈짓길부터 압구정 외곽까지, 그림을 판매하는 갤러리들의 인테리어는 대개 무채색이나 깔끔한 가구, 동선 배치로 방문객로 하여금 갤러리가 아닌 작품이 주인공이라는 느낌을 받게끔 합니다.
 
 애플의 디자이너도 비슷한 생각을 가지고 있는 것 같습니다.
 
@@ -38,9 +38,9 @@ subtitle: "이미지의 색상과 음악에 반응하는 컨테이너 UI를 구�
   <figcaption>출처-애플 뮤직 앱</figcaption>
 </figure>
 
-애플 뮤직의 UI 테마 역시 아티스트들의 앨범 커버가 돋보이기 위해 화이트/블랙의 모던한 컬러를 기반으로, 거기에 최대한 화려함을 덜어낸 미니멀 디자인을 보여줍니다. 애플이 원래도 미니멀한 디자인을 주로 활용하지만, 특히나 그러합니다.
+애플 뮤직의 UI 테마 역시 아티스트들의 앨범 커버가 돋보이기 위해 화이트/블랙의 모던한 컬러를 기반으로, 거기에 최대한 화려함을 덜어낸 미니멀 디자인을 보여줍니다. 애플이 원래도 미니멀한 디자인을 추구하지만, 뮤직 앱은 더욱 그런 특성이 두드러집니다.
 
-하지만, 마냥 미니멀하기만 하면 앱이 너무 심심해보이거나, 오히려 아티스트들의 앨범 커버가 돋보이지 않을 수 있습니다.
+허나 마냥 미니멀하기만 하면 앱이 너무 심심해보이거나, 오히려 아티스트들의 앨범 커버가 돋보이지 않을 수 있습니다.
 
 
 ## 앨범 커버 반응형 컨테이너
@@ -53,7 +53,266 @@ subtitle: "이미지의 색상과 음악에 반응하는 컨테이너 UI를 구�
   <figcaption>출처-애플 뮤직 앱</figcaption>
 </figure>
 
+위는 애플 뮤직에서 음악을 실행중일 때 볼 수 있는 잠금 화면 UI입니다.
 
+자칫 평범해보일수 있는 뮤직 플레이어 UI지만, 배경 화면을 앨범 커버 이미지의 색상을 추출한 스플래시 UI로 덮어 미니멀한 디자인을 유지하면서도 각각의 앨범 커버 이미지들의 특색을 살려줍니다.
+
+**이미지의 색상을 추출하여 배경에 그려준다**
+
+라는 단순한 발상이지만, 실제 구현에는 생각보다 신경써야 할 요소가 많습니다.
+
+무작위(혹은 다양한 프리셋 중 선택)으로 렌더링되는 그라데이션 요소나, 앨범 커버 이미지에서 색상을 추출할 때 단순히 이미지의 색상 면적 비율에 비례하는게 아닌 시각적으로 자연스러운 요소를 취사 선택하는 기술 등등... 애플답게 단순해보이는 UI에도 디테일한 요소가 상당히 많이 존재했습니다.
+
+## 이미지에서 색상을 추출하기
+
+실제 구현에서의 최우선 과제는, 이미지에서 색상을 추출하는 로직입니다.
+
+아래는 색상 추출 로직의 전체 코드입니다.
+
+##### ColorExtractor
+~~~dart
+part of '../adaptive_aura.dart';
+
+/// Utility class for extracting colors from images
+class ColorExtractor {
+  /// Extract color palette from an image
+  static Future<AuraColorPalette> extractColorsFromImage({
+    required ImageProvider imageProvider,
+    bool enableLogging = false,
+  }) async {
+    try {
+      if (enableLogging) {
+        debugPrint('🎨 Starting color extraction from image...');
+      }
+
+      // Load image
+      final imageStream = imageProvider.resolve(ImageConfiguration.empty);
+      final completer = Completer<ui.Image>();
+      final listener = ImageStreamListener(
+        (ImageInfo info, bool _) {
+          completer.complete(info.image);
+        },
+        onError: (exception, stackTrace) {
+          completer.completeError(exception);
+        },
+      );
+
+      imageStream.addListener(listener);
+      final image = await completer.future;
+      imageStream.removeListener(listener);
+
+      // Check image dimensions
+      final width = image.width;
+      final height = image.height;
+
+      if (enableLogging) {
+        debugPrint('📏 Image size: $width x $height');
+      }
+
+      // Extract image data
+      final byteData =
+          await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      if (byteData == null) {
+        throw Exception('Unable to extract image data');
+      }
+
+      final pixels = byteData.buffer.asUint8List();
+      final colors = <Color>[];
+
+      // Sampling pixel count (not processing all pixels for performance optimization)
+      final sampleSize = (width * height) ~/ 100;
+      final step = (width * height) ~/ sampleSize;
+
+      for (int i = 0; i < pixels.length; i += step * 4) {
+        if (i + 3 < pixels.length) {
+          final r = pixels[i];
+          final g = pixels[i + 1];
+          final b = pixels[i + 2];
+          final a = pixels[i + 3];
+
+          // Ignore transparent pixels
+          if (a > 0) {
+            colors.add(Color.fromARGB(a, r, g, b));
+          }
+        }
+      }
+
+      if (enableLogging) {
+        debugPrint('🔍 Number of sampled colors: ${colors.length}');
+      }
+
+      // Return default palette if no colors extracted
+      if (colors.isEmpty) {
+        if (enableLogging) {
+          debugPrint('⚠️ No colors extracted. Using default palette.');
+        }
+        return AuraColorPalette.defaultPalette();
+      }
+
+      // Sort colors by brightness
+      colors.sort((a, b) {
+        final brightnessA = (0.299 * a.red + 0.587 * a.green + 0.114 * a.blue);
+        final brightnessB = (0.299 * b.red + 0.587 * b.green + 0.114 * b.blue);
+        return brightnessB.compareTo(brightnessA);
+      });
+
+      // Select main colors
+      final primary = colors[colors.length ~/ 3];
+      final secondary = colors[colors.length ~/ 2];
+      final tertiary = colors[colors.length ~/ 4];
+      final light = colors.first;
+      final dark = colors.last;
+
+      if (enableLogging) {
+        debugPrint('✅ Color extraction complete');
+      }
+
+      return AuraColorPalette(
+        primary: primary,
+        secondary: secondary,
+        tertiary: tertiary,
+        light: light,
+        dark: dark,
+      );
+    } catch (e) {
+      debugPrint('❌ Error during color extraction: $e');
+      return AuraColorPalette.defaultPalette();
+    }
+  }
+}
+~~~
+
+ColorExtractor 클래스는 이미지에서 조화로운 색상 팔레트를 자동으로 추출하는 역할을 합니다. 이 과정을 단계별로 분석해보겠습니다.
+
+
+#### 이미지 소스 분석
+~~~ dart
+final imageStream = imageProvider.resolve(ImageConfiguration.empty);
+final completer = Completer<ui.Image>();
+final listener = ImageStreamListener(
+  (ImageInfo info, bool _) {
+    completer.complete(info.image);
+  },
+  onError: (exception, stackTrace) {
+    completer.completeError(exception);
+  },
+);
+
+imageStream.addListener(listener);
+final image = await completer.future;
+imageStream.removeListener(listener);
+~~~
+
+첫 번째 과정은 이미지 소스를 분석하는 것입니다.
+
+Flutter의 ImageProvider 시스템을 활용하여 다양한 소스(asset, network, file 등)의 이미지를 일관되게 처리
+Completer 패턴으로 비동기 이미지 로딩을 처리합니다.
+
+에러 핸들링을 통한 안정적인 이미지 로딩로 제공하도록 하고 있습니다.
+
+
+#### 색상 정보 추출
+~~~ dart
+final byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+if (byteData == null) {
+  throw Exception('Unable to extract image data');
+}
+
+final pixels = byteData.buffer.asUint8List();
+~~~
+
+이후, 이미지를 RGBA 형식의 바이트 데이터로 변환, 각 필셀의 색상 정보에 접근할수 있도록 제공합니다.
+
+
+#### 이미지 픽셀 최적화
+~~~ dart
+final sampleSize = (width * height) ~/ 100;
+final step = (width * height) ~/ sampleSize;
+
+for (int i = 0; i < pixels.length; i += step * 4) {
+  if (i + 3 < pixels.length) {
+    final r = pixels[i];
+    final g = pixels[i + 1];
+    final b = pixels[i + 2];
+    final a = pixels[i + 3];
+
+    // 투명한 픽셀 무시
+    if (a > 0) {
+      colors.add(Color.fromARGB(a, r, g, b));
+    }
+  }
+}
+~~~
+
+이미지를 픽셀 데이터로, 픽셀 데이터에서 색상 정보로 추출하는 과정에서는 추가적인 최적화 처리도 필요합니다.
+
+대용량 이미지에 대비하여, 모든 픽셀을 처리하는 대신 일정 간격으로 샘플링합니다. 또한, 투명 픽셀에 대한 색상 계산은 제외합니다.
+
+
+#### 컬러 팔레트 생성하기
+~~~dart
+colors.sort((a, b) {
+  final brightnessA = (0.299 * a.red + 0.587 * a.green + 0.114 * a.blue);
+  final brightnessB = (0.299 * b.red + 0.587 * b.green + 0.114 * b.blue);
+  return brightnessB.compareTo(brightnessA);
+});
+
+// 주요 색상 선택
+final primary = colors[colors.length ~/ 3];
+final secondary = colors[colors.length ~/ 2];
+final tertiary = colors[colors.length ~/ 4];
+final light = colors.first;
+final dark = colors.last;
+~~~
+
+사람의 눈은 녹색에 더 민감하게 반응합니다.
+따라서 자연스러운 색상 추출을 위해 3원색의 색상 중 청색광을 최대한 줄이고, 녹색의 비중을 높히도록 가중치를 적용합니다.
+
+추출한 색상을 바탕으로, 밝은 색상, 어두운 색상, 중간 톤(그중에서도 Primary, secondart, tertiary) 로 구분된 색상 팔레트를 만들어냅니다.
+
+
+## 컬러 팔레트 활용하기...?
+
+이제 생성된 컬러 팔레트를 배경에 입력하여 배경 UI를 그려봅시다.
+
+헌데, 한가지 준비과정이 더 남아있습니다.
+
+위 팔레트를 그대로 그라데이션 배경 UI에 넣어도 괜찮겠지만, 컬러 팔레트의 성격에 따라 약간의 추가 처리가 필요합니다.
+
+(밝은 톤의 앨범 커버로 그라데이션 생성한 이미지), (어두운 무채색 톤의 앨범 커버로 그라데이션 생성한 이미지)
+
+사람이 인지하는 앨범 커버의 이미지 컬러 구성과, 코드를 통해 컴퓨터가 인식하는 이미지의 컬러 구성은 상이합니다. 
+
+위 이미지의 예시로, 우리가 레드 핫 칠리 페퍼스의 캘리포니케이션 앨범 커버를 바라보면 **주황색과 파란색의 대비가 인상적**이라고 자연스럽게 느끼지만, 
+
+픽셀 단위로 분석하는 컴퓨터는 우리의 눈에는 중요도가 낮다고 느껴지는 수영장 영역 양 옆의 살구색 영역, 나무 그림의 어두운 초록색 영역도 팔레트에 포함할수 있습니다.
+
+무채색의 경우에도 마찬가지입니다.
+악틱 몽키즈의 AM 앨범 커버의 경우에도, 대부분이 검은색으로 이루어져있기에 앨범 커버 이미지를 바라보는 우리는 자연스레 **검은색 위주의 배경**을 연상할수 있습니다.
+
+허나 색상 추출 코드에서는 중간의 그래프 형상 포인트 그래픽의 하얀색마저 추출해버려, 마치 판다 무늬같은 배경이 생성될 가능성이 존재합니다.
+
+~~~dart
+(컬러 팔레트 성격별 enum 코드)
+~~~
+~~~dart
+(컬러 팔레트를 입력하면 위 enum 값을 산정해내는 코드)
+~~~
+
+이러한 문제를 해결하기 위해서는 컬러 팔레트의 성격을 분별하기 위해, 
+
+
+
+
+## 그라디언트 배경 생성하기
+
+이제 이미지로부터 색상을 추출하는 과정을 소개했으니, 직접 배경으로 그려볼 차례입니다.
+
+애플 뮤직 스타일의 배경을 구현하기 위해서는, 다음의 요소들이 필요합니다.
+
+- 기본 배경: 팔레트 색상을 사용한 선형 그라디언트
+- 그라디언트 포인트: 화면 전체에 분산된 다양한 크기와 불투명도의 방사형 그라디언트
+- 하이라이트 포인트: 특정 위치에 추가되는 강조 효과
 
 
 
