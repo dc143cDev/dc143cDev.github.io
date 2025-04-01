@@ -455,5 +455,148 @@ switch (colorCharacteristic) {
 - 그라디언트 포인트: 화면 전체에 분산된 다양한 크기와 불투명도의 방사형 그라디언트
 - 하이라이트 포인트: 특정 위치에 추가되는 강조 효과
 
+위 세 개의 요소를 각각의 위젯으로 레이어화하여, Stack 구조로 그라디언트 배경을 완성해봅시다.
+
+#### 기본 배경 레이어
+
+~~~dart
+@override
+Widget buildBackgroundLayer() {
+  // 애니메이션 값에 따라 그라디언트 위치 조정
+  final animationOffset = Alignment(0, 0.2 - (0.2 * animationValue));
+
+  // 팔레트 색상을 사용한 그라디언트 생성
+  return Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft + animationOffset,
+        end: Alignment.bottomRight - animationOffset,
+        colors: [
+          colorPalette.primary.withOpacity(0.9 * animationValue),
+          colorPalette.secondary.withOpacity(0.8 * animationValue),
+          colorPalette.tertiary.withOpacity(0.7 * animationValue),
+        ],
+      ),
+    ),
+  );
+}
+~~~
+
+기본 배경은 팔레트의 주요 색상들을 사용하여 선형 그라디언트를 생성합니다. 
+animationValue에 따라 그라디언트의 위치와 불투명도가 동적으로 변화하도록 설계했습니다.
 
 
+#### 그라디언트 포인트 (방사형)
+
+~~~dart
+/// 그라디언트 포인트 생성
+List<_GradientPoint> _generateGradientPoints() {
+  final points = <_GradientPoint>[];
+  final pointCount = _effectiveGradientPointCount;
+
+  // 기본 그라디언트 포인트 (항상 포함)
+  points.add(_generateBaseGradientPoint());
+
+  // variety > 0인 경우 추가 그라디언트 포인트 생성
+  if (variety > 0.0 && pointCount > 2) {
+    // 색상 팔레트 특성에 따른 색상 구성
+    final colors = <Color>[];
+    
+    switch (colorCharacteristic) {
+      case AuraColorCharacteristic.VIVID:
+        // 생동감 있는 테마: 원색 위주
+        colors.add(colorPalette.primary);
+        colors.add(colorPalette.secondary);
+        colors.add(colorPalette.tertiary);
+        // 추가 색상 믹스...
+        break;
+      case AuraColorCharacteristic.GRAYSCALE:
+        // 그레이스케일 테마: 무채색 위주
+        colors.add(colorPalette.primary);
+        colors.add(colorPalette.dark);
+        colors.add(colorPalette.light);
+        // 추가 그레이스케일 믹스...
+        break;
+      // 다른 특성들에 대한 처리...
+    }
+
+    // 그리드 기반 포인트 분산 배치
+    final gridSize = math.sqrt(pointCount).ceil();
+    final cellWidth = containerSize.width / gridSize;
+    final cellHeight = containerSize.height / gridSize;
+
+    // 추가 포인트 생성
+    for (int i = 1; i < pointCount; i++) {
+      // 색상 선택 및 포인트 생성 로직...
+      points.add(_GradientPoint(
+        color: gradientColor,
+        position: position,
+        size: size,
+        opacity: opacity * animationValue,
+      ));
+    }
+  }
+
+  return points;
+}
+~~~
+
+두 번째 레이어는 방사형 그라디언트입니다.
+특정 포인트를 지정하여, variety 값에 따라 단계적으로 표기됩니다.
+
+
+#### 레이어 구조
+~~~dart
+@override
+Widget buildAuraLayer() {
+  if (containerSize.width <= 0 ||
+      containerSize.height <= 0 ||
+      animationValue <= 0.01) {
+    return Container();
+  }
+
+  return ClipRect(
+    child: Stack(
+      children: [
+        // 하이라이트 레이어
+        CustomPaint(
+          size: containerSize,
+          painter: _HighlightPainter(
+            highlightPoints: _highlightPoints,
+            variety: variety,
+            animationValue: animationValue,
+            colorCharacteristic: colorCharacteristic,
+            colorPalette: colorPalette,
+          ),
+        ),
+
+        // 블러 레이어
+        BackdropFilter(
+          filter: ui.ImageFilter.blur(
+            sigmaX: 15.0 + (25.0 * variety),
+            sigmaY: 15.0 + (25.0 * variety),
+          ),
+          child: Container(color: Colors.transparent),
+        ),
+      ],
+    ),
+  );
+}
+~~~
+
+최종적으로 모든 레이어가 Stack으로 쌓여 렌더링됩니다:
+1. 가장 아래에 기본 배경 (선형 그라디언트)
+2. 그 위에 그라디언트 포인트들
+3. 맨 위에 하이라이트 포인트들
+4. 전체적으로 블러 효과 적용
+이러한 레이어 구조와 각 요소들의 특성별 처리를 통해 애플 뮤직과 유사한 자연스러운 그라디언트 배경이 구현됩니다.
+
+
+## 완성 예시
+
+<figure>
+  <img src="/assets/images/post-250218-04.jpeg" alt="" class="screenshot">
+  <figcaption> </figcaption>
+</figure>
+
+이미지 데이터로부터 색상을 추출하고, 추출한 색상 팔레트를 기반으로
