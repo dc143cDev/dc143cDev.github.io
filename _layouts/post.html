@@ -34,32 +34,32 @@ layout: default
   </div>
 
   <div class="post-recommendations">
-    <h3 class="recommendations-title">추천 포스트</h3>
-    <div class="recommendations-grid">
+    <h3 class="related-posts-title">추천 포스트</h3>
+    <div class="related-posts-list">
       {% assign available_posts = site.posts | where_exp:"post", "post.url != page.url" %}
       
       {% if available_posts.size > 0 %}
         {% if page.sgst_post %}
-          {% assign shown_count = 0 %}
           {% for post_name in page.sgst_post %}
             {% for site_post in available_posts %}
               {% assign filename = site_post.path | split: '/' | last %}
-              {% if filename == post_name and shown_count < 2 %}
-                {% assign shown_count = shown_count | plus: 1 %}
-                <a href="{{ site_post.url }}" class="recommendation-card">
-                  <h4 class="card-title">{{ site_post.title }}</h4>
-                  {% if site_post.subtitle %}
-                    <p class="card-subtitle">{{ site_post.subtitle }}</p>
-                  {% endif %}
-                  <div class="card-meta">
-                    <span class="card-date">{{ site_post.date | date: "%Y년 %m월 %d일" }}</span>
-                    {% if site_post.tags %}
-                      <div class="card-tags">
-                        {% for tag in site_post.tags limit:2 %}
-                          <span class="tag-small">{{ tag }}</span>
-                        {% endfor %}
-                      </div>
+              {% if filename == post_name %}
+                <a href="{{ site_post.url }}" class="related-post-card">
+                  <div class="related-post-content">
+                    <h4 class="related-post-title">{{ site_post.title }}</h4>
+                    {% if site_post.subtitle %}
+                      <p class="related-post-subtitle">{{ site_post.subtitle }}</p>
                     {% endif %}
+                    <div class="related-post-meta">
+                      <span class="related-post-date">{{ site_post.date | date: "%b %d, %Y" }}</span>
+                      {% if site_post.tags %}
+                        <div class="related-post-tags">
+                          {% for tag in site_post.tags limit:2 %}
+                            <span class="tag-small">{{ tag }}</span>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    </div>
                   </div>
                 </a>
               {% endif %}
@@ -67,20 +67,22 @@ layout: default
           {% endfor %}
         {% else %}
           {% assign shown_post = available_posts | first %}
-          <a href="{{ shown_post.url }}" class="recommendation-card">
-            <h4 class="card-title">{{ shown_post.title }}</h4>
-            {% if shown_post.subtitle %}
-              <p class="card-subtitle">{{ shown_post.subtitle }}</p>
-            {% endif %}
-            <div class="card-meta">
-              <span class="card-date">{{ shown_post.date | date: "%Y년 %m월 %d일" }}</span>
-              {% if shown_post.tags %}
-                <div class="card-tags">
-                  {% for tag in shown_post.tags limit:2 %}
-                    <span class="tag-small">{{ tag }}</span>
-                  {% endfor %}
-                </div>
+          <a href="{{ shown_post.url }}" class="related-post-card">
+            <div class="related-post-content">
+              <h4 class="related-post-title">{{ shown_post.title }}</h4>
+              {% if shown_post.subtitle %}
+                <p class="related-post-subtitle">{{ shown_post.subtitle }}</p>
               {% endif %}
+              <div class="related-post-meta">
+                <span class="related-post-date">{{ shown_post.date | date: "%b %d, %Y" }}</span>
+                {% if shown_post.tags %}
+                  <div class="related-post-tags">
+                    {% for tag in shown_post.tags limit:2 %}
+                      <span class="tag-small">{{ tag }}</span>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
             </div>
           </a>
         {% endif %}

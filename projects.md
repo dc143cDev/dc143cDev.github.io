@@ -21,7 +21,7 @@ layout: default
         <h3 class="project-title">{{ project.title }}</h3>
         <div class="project-meta">
           <span class="project-type">{{ project.type }}</span>
-          <span class="project-date">{{ project.date | date: "%Y년 %m월" }}</span>
+          <span class="project-date">{{ project.date | date: "%b %Y" }}</span>
         </div>
         
         {% if project.description %}

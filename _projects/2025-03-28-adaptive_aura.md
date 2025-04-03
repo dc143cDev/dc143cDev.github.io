@@ -1,10 +1,13 @@
 ---
 layout: project
-title: "샘플 포스트 제목"
+title: "Adaptive_Aura"
 description: "프로젝트 설명. 두줄에서 다섯 줄 정도. 작은 픽셀"
-type: "Flutter Package" # 프로젝트 유형
-date: 2023-04-01 #대략적인 개발 기간
+type: "Flutter Package" # 프로젝트 유형 
+date: 2025-03-28 #대략적인 개발 기간
 thumbnail: "/assets/images/post-250218-04.jpeg" # 썸네일 이미지 링크 or path
+posts: 
+  - 2025-02-18-color-responsible-splash.md
+
 ---
 
 ## 샘플 프로젝트 내용
