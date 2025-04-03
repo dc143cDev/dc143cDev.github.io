@@ -1,0 +1,93 @@
+---
+layout: default
+---
+
+<div class="progress-container">
+  <div class="progress-bar" id="scrollProgress"></div>
+</div>
+
+<article class="project-detail">
+  <header class="project-header">
+    <h1 class="project-title">{{ page.title }}</h1>
+    
+    <div class="project-meta">
+      <span class="project-type">{{ page.type }}</span>
+      <span class="project-divider">&nbsp;·&nbsp;</span>
+      <span class="project-date">{{ page.date | date: "%Y년 %m월" }}</span>
+    </div>
+    
+    {% if page.description %}
+    <div class="project-description">
+      {{ page.description }}
+    </div>
+    {% endif %}
+    
+    {% if page.thumbnail %}
+    <div class="project-thumbnail">
+      <img src="{{ page.thumbnail }}" alt="{{ page.title }}" class="screenshot">
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="project-content">
+    {{ content }}
+  </div>
+
+  <div class="project-navigation">
+    <div class="nav-links">
+      {% if page.previous.url %}
+        <a class="prev-link" href="{{ page.previous.url }}">← 이전 프로젝트</a>
+      {% endif %}
+      
+      <a class="all-link" href="/projects">모든 프로젝트</a>
+      
+      {% if page.next.url %}
+        <a class="next-link" href="{{ page.next.url }}">다음 프로젝트 →</a>
+      {% endif %}
+    </div>
+  </div>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 스크롤 진행률 표시 기능
+  window.addEventListener('scroll', function() {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    
+    document.getElementById("scrollProgress").style.width = scrolled + "%";
+  });
+
+  // 스크린샷 이미지 클릭 시 모달 표시
+  document.querySelectorAll('.screenshot').forEach(img => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'screenshot-wrapper';
+    img.parentNode.insertBefore(wrapper, img);
+    wrapper.appendChild(img);
+    
+    wrapper.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      
+      const modalImg = document.createElement('img');
+      modalImg.src = img.src;
+      modalImg.className = 'modal-content';
+      
+      modal.appendChild(modalImg);
+      document.body.appendChild(modal);
+      
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+      });
+      
+      modal.addEventListener('click', function() {
+        modal.classList.remove('active');
+        setTimeout(() => {
+          modal.remove();
+        }, 300);
+      });
+    });
+  });
+});
+</script> 

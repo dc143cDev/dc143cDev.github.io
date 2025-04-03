@@ -13,6 +13,12 @@ author:
   github: https://github.com/dc143cDev
   email: devc143c@gmail.com
 
+# Collections
+collections:
+  projects:
+    output: true
+    permalink: /projects/:title/
+
 # Gem
 plugins:
   - jekyll-gist

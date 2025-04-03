@@ -1,0 +1,218 @@
+// 프로젝트 목록 페이지 스타일
+.projects-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  
+  // 링크 밑줄 효과를 제거하기 위한 높은 특이성 선택자
+  a.project-card {
+    text-decoration: none !important;
+    
+    &:hover, &:focus, &:active {
+      text-decoration: none !important;
+    }
+  }
+}
+
+.project-card {
+  display: block;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  
+  &:hover, &:focus {
+    text-decoration: none;
+  }
+  
+  .project-thumbnail {
+    height: 400px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    &.no-image {
+      background: linear-gradient(135deg, #3498db, #8e44ad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .no-image-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        span {
+          font-size: 3rem;
+          font-weight: 700;
+          color: white;
+        }
+      }
+    }
+  }
+  
+  &:hover {
+    .project-thumbnail img {
+      transform: scale(1.05);
+    }
+    
+    .project-title {
+      color: #dc143c;
+    }
+  }
+  
+  .project-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--heading-color);
+    transition: color 0.3s ease;
+  }
+  
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    
+    .project-type {
+      background: var(--secondary-bg);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    
+    .project-date {
+      color: var(--secondary-color);
+    }
+  }
+  
+  .project-description {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    line-height: 1.6;
+  }
+}
+
+// 프로젝트 상세 페이지 스타일
+.project-detail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  
+  .project-header {
+    margin-bottom: 2rem;
+    
+    .project-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      
+      .project-type {
+        background: var(--secondary-bg);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+      
+      .project-date {
+        color: var(--secondary-color);
+      }
+    }
+    
+    .project-description {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      color: var(--secondary-color);
+      line-height: 1.6;
+    }
+    
+    .project-thumbnail {
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      
+      img {
+        width: 100%;
+        display: block;
+      }
+    }
+  }
+  
+  .project-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    
+    p, ul, ol, blockquote {
+      margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      margin: 2.5rem 0 1rem;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem;
+    }
+  }
+  
+  .project-navigation {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      a {
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
+        background: var(--secondary-bg);
+        color: var(--body-color);
+        text-decoration: none;
+        transition: background 0.2s ease;
+        
+        &:hover {
+          background: var(--border-color);
+        }
+      }
+      
+      .all-link {
+        font-weight: 600;
+      }
+    }
+  }
+} 

@@ -2,25 +2,32 @@
 layout: default
 ---
 
-<div class="posts-container">
-  <h1 class="archive-title">Projects</h1>
-  <div class="posts-list">
-    {% for post in site.projects %}
-      <article class="post-item" data-tags="{{ post.tags | join: ',' | downcase }}">
-        <h3 class="post-title">
-          <a href="{{ post.url }}">{{ post.title }}</a>
-        </h3>
-        <div class="post-meta">
-          <time>{{ post.date | date: "%Y-%m-%d" }}</time>
-          {% if post.tags %}
-            <div class="post-tags">
-              {% for tag in post.tags %}
-                <span class="tag-small">{{ tag }}</span>
-              {% endfor %}
+<div class="projects-container">
+  <div class="projects-list">
+    {% for project in site.projects %}
+      <a href="{{ project.url }}" class="project-card">
+        {% if project.thumbnail %}
+          <div class="project-thumbnail">
+            <img src="{{ project.thumbnail }}" alt="{{ project.title }}">
+          </div>
+        {% else %}
+          <div class="project-thumbnail no-image">
+            <div class="no-image-placeholder">
+              <span>{{ project.title | slice: 0, 1 }}</span>
             </div>
-          {% endif %}
+          </div>
+        {% endif %}
+        
+        <h3 class="project-title">{{ project.title }}</h3>
+        <div class="project-meta">
+          <span class="project-type">{{ project.type }}</span>
+          <span class="project-date">{{ project.date | date: "%Y년 %m월" }}</span>
         </div>
-      </article>
+        
+        {% if project.description %}
+          <p class="project-description">{{ project.description }}</p>
+        {% endif %}
+      </a>
     {% endfor %}
   </div>
 </div>
