@@ -3,7 +3,7 @@
 
   {% include head.html %}
 
-  <body>
+  <body {% if page.layout == 'post' %}class="post-page"{% endif %}>
     {% if page.layout == 'post' %}
     <div class="progress-container">
       <div class="progress-bar" id="scrollProgress"></div>
