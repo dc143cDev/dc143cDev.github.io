@@ -5,6 +5,25 @@
   padding: 1rem;
 }
 
+.projects-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: var(--heading-color);
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .projects-list {
   display: flex;
   flex-direction: column;
@@ -25,6 +44,14 @@
   position: relative;
   text-decoration: none;
   color: inherit;
+  opacity: 0;
+  animation: projectFadeIn 0.5s ease-out forwards;
+  
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
   
   &:hover, &:focus {
     text-decoration: none;
@@ -111,6 +138,18 @@
     font-size: 1.1rem;
     color: var(--secondary-color);
     line-height: 1.6;
+  }
+}
+
+// 프로젝트 카드 애니메이션
+@keyframes projectFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

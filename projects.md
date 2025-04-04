@@ -3,6 +3,7 @@ layout: default
 ---
 
 <div class="projects-container">
+  <h1 class="projects-title">Projects</h1>
   <div class="projects-list">
     {% for project in site.projects %}
       <a href="{{ project.url }}" class="project-card">
@@ -31,3 +32,11 @@ layout: default
     {% endfor %}
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 페이지 로드 완료 후 실행되는 스크립트
+  // 프로젝트 카드에 애니메이션 클래스가 이미 CSS에 적용되어 있으므로
+  // 추가 스크립트는 필요하지 않습니다.
+});
+</script>

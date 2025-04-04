@@ -4,6 +4,7 @@ title: Home
 ---
 
 <div class="posts-container">
+  <h1 class="posts-title">Posts</h1>
   <div class="tags-filter">
     {% assign tags_with_count = "" | split: "" %}
     {% for tag in site.tags %}
@@ -64,10 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const tagCount = document.querySelector('.tag-count');
   
   // 초기 페이지 로드시 애니메이션 적용
-  posts.forEach(post => {
-    post.classList.remove('hidden');
-    post.classList.add('visible');
-  });
+  // (CSS에서 애니메이션 직접 적용)
   
   tags.forEach(tag => {
     tag.addEventListener('click', function() {
@@ -77,8 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (this.classList.contains('active')) {
         this.classList.remove('active');
         tagInfo.style.display = 'none';
-        posts.forEach(post => {
+        posts.forEach((post, index) => {
           post.classList.remove('hidden');
+          post.style.animationDelay = `${index * 0.1}s`;
           post.classList.add('visible');
         });
       } else {
@@ -88,11 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
         tagInfo.style.display = 'inline-block';
         tagCount.textContent = `${count} Posts`;
         
+        let visibleCount = 0;
         posts.forEach(post => {
           const postTags = post.dataset.tags.split(',');
           if (postTags.includes(selectedTag)) {
             post.classList.remove('hidden');
+            post.style.animationDelay = `${visibleCount * 0.1}s`;
             post.classList.add('visible');
+            visibleCount++;
           } else {
             post.classList.add('hidden');
             post.classList.remove('visible');
@@ -118,6 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
   padding: 1rem 1rem 2rem 1rem;
 }
 
+.posts-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: var(--heading-color);
+  animation: fadeInDown 0.5s ease-out;
+}
+
 .post-card-link {
   display: block;
   text-decoration: none;
@@ -133,6 +143,39 @@ document.addEventListener('DOMContentLoaded', function() {
   transform-origin: center;
   background: var(--post-bg);
   border-radius: 12px;
+  opacity: 0;
+  animation: postFadeIn 0.5s ease-out forwards;
+}
+
+.post-card-link:nth-child(1) .post-card {
+  animation-delay: 0.1s;
+}
+.post-card-link:nth-child(2) .post-card {
+  animation-delay: 0.2s;
+}
+.post-card-link:nth-child(3) .post-card {
+  animation-delay: 0.3s;
+}
+.post-card-link:nth-child(4) .post-card {
+  animation-delay: 0.4s;
+}
+.post-card-link:nth-child(5) .post-card {
+  animation-delay: 0.5s;
+}
+.post-card-link:nth-child(6) .post-card {
+  animation-delay: 0.6s;
+}
+.post-card-link:nth-child(7) .post-card {
+  animation-delay: 0.7s;
+}
+.post-card-link:nth-child(8) .post-card {
+  animation-delay: 0.8s;
+}
+.post-card-link:nth-child(9) .post-card {
+  animation-delay: 0.9s;
+}
+.post-card-link:nth-child(10) .post-card {
+  animation-delay: 1s;
 }
 
 .post-card-link:hover .post-card {
@@ -201,6 +244,16 @@ document.addEventListener('DOMContentLoaded', function() {
   background-color: rgba(220, 20, 60, 0.05);
 }
 
+.tags-filter {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  animation: fadeInDown 0.5s ease-out 0.2s;
+  animation-fill-mode: both;
+}
+
 .tags-filter .tag {
   position: relative;
   overflow: hidden;
@@ -240,5 +293,27 @@ document.addEventListener('DOMContentLoaded', function() {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes postFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
