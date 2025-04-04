@@ -6,94 +6,109 @@ layout: default
   <div class="progress-bar" id="scrollProgress"></div>
 </div>
 
-<article class="medium-post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <div class="post-meta">
-      <span class="meta-group">
-        {{ page.date | date: "%B %d, %Y" }}
-        <span class="post-divider">&nbsp;·&nbsp;</span>
-        {% if page.read_time %}
-          {{ page.read_time }} min read
-        {% else %}
-          {{ content | number_of_words | divided_by: 180 | plus: 1 }} min read
-        {% endif %}
-      </span>
+<div class="post-layout">
+  <!-- 목차 컴포넌트 (왼쪽에 위치) -->
+  <div class="post-toc" id="toc">
+    <div class="toc-container">
+      <h4 class="toc-header">목차</h4>
+      <div class="toc" id="toc-content">
+        <!-- 목차가 자바스크립트로 생성됩니다 -->
+      </div>
     </div>
-    {% if page.tags %}
-    <div class="post-tags">
-      {% for tag in page.tags %}
-        <span class="tag">{{ tag }}</span>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </header>
-
-  <div class="post-content">
-    {{ content }}
   </div>
 
-  <div class="post-recommendations">
-    <h3 class="related-posts-title">추천 포스트</h3>
-    <div class="related-posts-list">
-      {% assign available_posts = site.posts | where_exp:"post", "post.url != page.url" %}
-      
-      {% if available_posts.size > 0 %}
-        {% if page.sgst_post %}
-          {% for post_name in page.sgst_post %}
-            {% for site_post in available_posts %}
-              {% assign filename = site_post.path | split: '/' | last %}
-              {% if filename == post_name %}
-                <a href="{{ site_post.url }}" class="related-post-card">
-                  <div class="related-post-content">
-                    <h4 class="related-post-title">{{ site_post.title }}</h4>
-                    {% if site_post.subtitle %}
-                      <p class="related-post-subtitle">{{ site_post.subtitle }}</p>
-                    {% endif %}
-                    <div class="related-post-meta">
-                      <span class="related-post-date">{{ site_post.date | date: "%b %d, %Y" }}</span>
-                      {% if site_post.tags %}
-                        <div class="related-post-tags">
-                          {% for tag in site_post.tags limit:2 %}
-                            <span class="tag-small">{{ tag }}</span>
-                          {% endfor %}
-                        </div>
-                      {% endif %}
-                    </div>
-                  </div>
-                </a>
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-        {% else %}
-          {% assign shown_post = available_posts | first %}
-          <a href="{{ shown_post.url }}" class="related-post-card">
-            <div class="related-post-content">
-              <h4 class="related-post-title">{{ shown_post.title }}</h4>
-              {% if shown_post.subtitle %}
-                <p class="related-post-subtitle">{{ shown_post.subtitle }}</p>
-              {% endif %}
-              <div class="related-post-meta">
-                <span class="related-post-date">{{ shown_post.date | date: "%b %d, %Y" }}</span>
-                {% if shown_post.tags %}
-                  <div class="related-post-tags">
-                    {% for tag in shown_post.tags limit:2 %}
-                      <span class="tag-small">{{ tag }}</span>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </a>
-        {% endif %}
-      {% else %}
-        <div class="no-recommendations">
-          <p>아직 추천할 만한 포스트가 없습니다.</p>
+  <!-- 포스트 내용 (오른쪽에 위치) -->
+  <div class="post-wrapper">
+    <article class="medium-post">
+      <header class="post-header">
+        <h1 class="post-title">{{ page.title }}</h1>
+        <div class="post-meta">
+          <span class="meta-group">
+            {{ page.date | date: "%B %d, %Y" }}
+            <span class="post-divider">&nbsp;·&nbsp;</span>
+            {% if page.read_time %}
+              {{ page.read_time }} min read
+            {% else %}
+              {{ content | number_of_words | divided_by: 180 | plus: 1 }} min read
+            {% endif %}
+          </span>
         </div>
-      {% endif %}
-    </div>
+        {% if page.tags %}
+        <div class="post-tags">
+          {% for tag in page.tags %}
+            <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </header>
+
+      <div class="post-content">
+        {{ content }}
+      </div>
+
+      <div class="post-recommendations">
+        <h3 class="related-posts-title">추천 포스트</h3>
+        <div class="related-posts-list">
+          {% assign available_posts = site.posts | where_exp:"post", "post.url != page.url" %}
+          
+          {% if available_posts.size > 0 %}
+            {% if page.sgst_post %}
+              {% for post_name in page.sgst_post %}
+                {% for site_post in available_posts %}
+                  {% assign filename = site_post.path | split: '/' | last %}
+                  {% if filename == post_name %}
+                    <a href="{{ site_post.url }}" class="related-post-card">
+                      <div class="related-post-content">
+                        <h4 class="related-post-title">{{ site_post.title }}</h4>
+                        {% if site_post.subtitle %}
+                          <p class="related-post-subtitle">{{ site_post.subtitle }}</p>
+                        {% endif %}
+                        <div class="related-post-meta">
+                          <span class="related-post-date">{{ site_post.date | date: "%b %d, %Y" }}</span>
+                          {% if site_post.tags %}
+                            <div class="related-post-tags">
+                              {% for tag in site_post.tags limit:2 %}
+                                <span class="tag-small">{{ tag }}</span>
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% else %}
+              {% assign shown_post = available_posts | first %}
+              <a href="{{ shown_post.url }}" class="related-post-card">
+                <div class="related-post-content">
+                  <h4 class="related-post-title">{{ shown_post.title }}</h4>
+                  {% if shown_post.subtitle %}
+                    <p class="related-post-subtitle">{{ shown_post.subtitle }}</p>
+                  {% endif %}
+                  <div class="related-post-meta">
+                    <span class="related-post-date">{{ shown_post.date | date: "%b %d, %Y" }}</span>
+                    {% if shown_post.tags %}
+                      <div class="related-post-tags">
+                        {% for tag in shown_post.tags limit:2 %}
+                          <span class="tag-small">{{ tag }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% endif %}
+          {% else %}
+            <div class="no-recommendations">
+              <p>아직 추천할 만한 포스트가 없습니다.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </article>
   </div>
-</article>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -130,5 +145,128 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+
+  // 목차 생성
+  const contentElement = document.querySelector('.post-content');
+  const tocElement = document.getElementById('toc-content');
+  
+  if (!contentElement || !tocElement) return;
+  
+  // 제목 요소 찾기 (H2, H3, H4)
+  const headings = contentElement.querySelectorAll('h2, h3, h4');
+  
+  if (headings.length === 0) {
+    // 제목이 없으면 목차 숨기기
+    const tocContainer = document.getElementById('toc');
+    if (tocContainer) {
+      tocContainer.style.display = 'none';
+    }
+    return;
+  }
+  
+  // 각 제목에 ID 추가하고 목차 항목 생성
+  headings.forEach((heading, index) => {
+    // 고유 ID 생성 (제목 텍스트 기반)
+    const headingText = heading.textContent;
+    const headingId = `heading-${index}-${headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`;
+    heading.id = headingId;
+    
+    // 제목 레벨에 따른 스타일 결정
+    const level = heading.tagName.toLowerCase(); // 'h2', 'h3', 'h4'
+    
+    // 목차 항목 생성
+    const tocItem = document.createElement('a');
+    tocItem.href = `#${headingId}`;
+    tocItem.className = `toc-link ${level}`;
+    tocItem.textContent = headingText;
+    tocItem.dataset.target = headingId;
+    
+    // 클릭 이벤트 추가 (스무스 스크롤)
+    tocItem.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const targetElement = document.getElementById(headingId);
+      if (!targetElement) return;
+      
+      const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 80; // 헤더 높이 고려
+      
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+      
+      // URL 해시 업데이트 (히스토리 추가 없이)
+      history.replaceState(null, null, `#${headingId}`);
+    });
+    
+    tocElement.appendChild(tocItem);
+  });
+  
+  // 스크롤 이벤트 리스너 추가 (현재 위치 하이라이트)
+  function updateActiveHeading() {
+    // 현재 스크롤 위치
+    const scrollPosition = window.scrollY;
+    
+    // 모든 제목 요소 확인
+    let currentHeading = null;
+    
+    // 역순으로 처리하여 현재 보이는 제목 중 가장 가까운 것을 찾음
+    for (let i = headings.length - 1; i >= 0; i--) {
+      const heading = headings[i];
+      const headingTop = heading.getBoundingClientRect().top + window.scrollY;
+      
+      if (headingTop - 100 <= scrollPosition) {
+        currentHeading = heading;
+        break;
+      }
+    }
+    
+    // 현재 활성화된 모든 항목 비활성화
+    document.querySelectorAll('.toc-link.active').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    // 현재 보이는 제목에 해당하는 목차 항목 활성화
+    if (currentHeading) {
+      const currentTocItem = document.querySelector(`.toc-link[data-target="${currentHeading.id}"]`);
+      if (currentTocItem) {
+        currentTocItem.classList.add('active');
+      }
+    } else if (headings.length > 0 && scrollPosition < 100) {
+      // 스크롤이 맨 위에 있을 때 첫 번째 항목 활성화
+      const firstTocItem = document.querySelector('.toc-link');
+      if (firstTocItem) {
+        firstTocItem.classList.add('active');
+      }
+    }
+  }
+  
+  // 스크롤 이벤트와 디바운싱 처리
+  let scrollTimeout;
+  window.addEventListener('scroll', function() {
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    scrollTimeout = setTimeout(updateActiveHeading, 50);
+  });
+  
+  // 초기 활성화 처리
+  setTimeout(updateActiveHeading, 100);
+  
+  // URL에 해시가 있으면 해당 위치로 스크롤
+  if (window.location.hash) {
+    const targetId = window.location.hash.substring(1);
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      setTimeout(() => {
+        const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth'
+        });
+      }, 300);
+    }
+  }
 });
 </script>

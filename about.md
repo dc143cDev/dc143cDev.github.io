@@ -18,6 +18,8 @@ title:
       </p>
       <div class="about-links">
         <a href="mailto:{{ site.author.email }}">Contact</a>
+        <span class="links-divider">·</span>
+        <a href="https://github.com/dc143cDev" target="_blank">GitHub</a>
       </div>
     </div>
   </div>

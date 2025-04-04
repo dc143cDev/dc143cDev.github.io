@@ -21,41 +21,45 @@ title: Home
     {% endfor %}
   </div>
   
-  <div class="selected-tag-info" style="display: none;">
-    <span class="tag-count"></span>
+  <div class="tag-info-container" style="text-align: center;">
+    <div class="selected-tag-info" style="display: none;">
+      <span class="tag-count"></span>
+    </div>
   </div>
 
   {% assign posts = site.posts | sort: 'date' | reverse %}
   {% for post in posts %}
-    <article class="post-card" data-tags="{{ post.tags | join: ',' | downcase }}">
-      <h2 class="post-title">
-        <a href="{{ post.url }}">{{ post.title }}</a>
-      </h2>
-      <div class="post-meta">
-        <time>{{ post.date | date: "%Y. %m. %d" }}</time>
-        <span class="meta-dot">·</span>
-        {% if post.read_time %}
-          <span class="read-time">{{ post.read_time }} min</span>
-        {% endif %}
-      </div>
-      {% if post.tags %}
-        <div class="post-tags">
-          {% for tag in post.tags %}
-            <span class="tag">{{ tag }}</span>
-          {% endfor %}
+    <a href="{{ post.url }}" class="post-card-link">
+      <article class="post-card" data-tags="{{ post.tags | join: ',' | downcase }}">
+        <h2 class="post-title">
+          <span>{{ post.title }}</span>
+        </h2>
+        <div class="post-meta">
+          <time>{{ post.date | date: "%Y. %m. %d" }}</time>
+          <span class="meta-dot">·</span>
+          {% if post.read_time %}
+            <span class="read-time">{{ post.read_time }} min</span>
+          {% endif %}
         </div>
-      {% endif %}
-      {% if post.subtitle %}
-        <p class="post-subtitle">{{ post.subtitle }}</p>
-      {% endif %}
-    </article>
+        {% if post.tags %}
+          <div class="post-tags">
+            {% for tag in post.tags %}
+              <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% if post.subtitle %}
+          <p class="post-subtitle">{{ post.subtitle }}</p>
+        {% endif %}
+      </article>
+    </a>
   {% endfor %}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const tags = document.querySelectorAll('.tags-filter .tag');
-  const posts = document.querySelectorAll('.post-card');
+  const posts = document.querySelectorAll('article.post-card');
   const tagInfo = document.querySelector('.selected-tag-info');
   const tagCount = document.querySelector('.tag-count');
   
@@ -81,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tags.forEach(t => t.classList.remove('active'));
         this.classList.add('active');
         
-        tagInfo.style.display = 'block';
+        tagInfo.style.display = 'inline-block';
         tagCount.textContent = `${count} Posts`;
         
         posts.forEach(post => {
@@ -97,6 +101,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+  
+  // 포스트 태그 클릭 시 이벤트 버블링 방지
+  document.querySelectorAll('.post-tags .tag').forEach(tag => {
+    tag.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  });
 });
 </script>
 
@@ -104,35 +115,44 @@ document.addEventListener('DOMContentLoaded', function() {
 .posts-container {
   max-width: 680px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem 1rem 2rem 1rem;
+}
+
+.post-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .post-card {
   margin-bottom: 3rem;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
   transform-origin: center;
+  background: var(--post-bg);
+  border-radius: 12px;
 }
 
-.post-card:hover {
+.post-card-link:hover .post-card {
   transform: translateY(-4px) scale(1.02);
 }
 
 .post-title {
-  margin: 0 0 1rem;
+  margin: 0 0 0.6rem;
 }
 
-.post-title a {
+.post-title span {
   color: var(--heading-color);
   text-decoration: none;
   font-size: 1.5rem;
-  line-height: 1.4;
+  line-height: 1.3;
   transition: color 0.3s ease;
   border-bottom: none;
 }
 
-.post-title a:hover {
+.post-card-link:hover .post-title span {
   color: #dc143c;
   text-decoration: none;
   border-bottom: none;
@@ -145,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
   gap: 0.5rem;
   color: var(--gray-600);
   font-size: 0.9rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .meta-dot {
@@ -160,39 +180,61 @@ document.addEventListener('DOMContentLoaded', function() {
 .post-tags {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin: 0.5rem 0;
+  gap: 0.8rem;
+  margin: 0.4rem 0;
 }
 
 .tag {
   color: var(--gray-600);
   font-size: 0.9rem;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.4rem 0.7rem;
+  border-radius: 20px;
 }
 
 .tag:hover {
   color: #dc143c;
+  background-color: rgba(220, 20, 60, 0.05);
+}
+
+.tags-filter .tag {
+  position: relative;
+  overflow: hidden;
+}
+
+.tags-filter .tag.active {
+  color: #dc143c;
+  background-color: rgba(220, 20, 60, 0.1);
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(220, 20, 60, 0.15);
+  transform: translateY(-1px);
 }
 
 .post-subtitle {
   color: var(--body-color);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.5;
   text-align: center;
-  margin: 0;
+  margin: 0.3rem 0 0;
 }
 
 .selected-tag-info {
   text-align: center;
-  margin: 1.5rem 0;
+  margin: 1rem 0 2rem;
   color: var(--gray-600);
   font-size: 0.95rem;
   animation: fadeIn 0.3s ease-out;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: rgba(220, 20, 60, 0.08);
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @keyframes fadeIn {
