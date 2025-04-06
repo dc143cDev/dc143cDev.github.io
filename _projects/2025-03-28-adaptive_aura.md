@@ -1,10 +1,11 @@
 ---
 layout: project
 title: "Adaptive_Aura"
-description: "프로젝트 설명. 두줄에서 다섯 줄 정도. 작은 픽셀"
+description: "Adaptive_Aura는 모든 Flutter 플랫폼에서 사용 가능한 이미지 반응형 UI 패키지입니다.
+사용자가 제공하는 이미지의 색상을 추출하여 여러가지 스타일의 컨테이너 그래픽을 생성해주며, 파라미터를 통해 커스터마이징 요소도 제공합니다."
 type: "Flutter Package" # 프로젝트 유형 
 date: 2025-03-28 #대략적인 개발 기간
-thumbnail: "/assets/images/post-250218-04.jpeg" # 썸네일 이미지 링크 or path
+thumbnail: "/assets/images/adative_aura_title.001.jpeg" # 썸네일 이미지 링크 or path
 posts: 
   - 2025-02-18-color-responsible-splash.md
 
