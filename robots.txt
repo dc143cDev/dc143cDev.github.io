@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dc143cDev.github.io/sitemap.xml 

@@ -1,5 +1,7 @@
 ---
 layout: default
+title: Projects
+description: dc143c's projects
 ---
 
 <div class="projects-container">
