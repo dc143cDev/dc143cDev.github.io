@@ -18,7 +18,7 @@ description: dc143c's
         Amateur Guitar Player
       </p>
       <div class="about-links">
-        <a href="javascript:void(0);" id="contactLink" onclick="copyEmail()">Contact</a>
+        <a href="javascript:void(0);" id="contactLink" onclick="copyEmail()">Email</a>
         <span class="links-divider">·</span>
         <a href="https://github.com/dc143cDev" target="_blank">GitHub</a>
       </div>
