@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 
-description: dc143c's posts
+description: dc143c's
 ---
 
 <div class="about-container">
@@ -18,13 +18,35 @@ description: dc143c's posts
         Amateur Guitar Player
       </p>
       <div class="about-links">
-        <a href="mailto:{{ site.author.email }}">Contact</a>
+        <a href="javascript:void(0);" id="contactLink" onclick="copyEmail()">Contact</a>
         <span class="links-divider">·</span>
         <a href="https://github.com/dc143cDev" target="_blank">GitHub</a>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function copyEmail() {
+  const email = "{{ site.author.email }}";
+  navigator.clipboard.writeText(email)
+    .then(() => {
+      const contactLink = document.getElementById('contactLink');
+      const originalText = contactLink.textContent;
+      
+      contactLink.textContent = "Copied!";
+      contactLink.style.color = "#dc143c";
+      
+      setTimeout(() => {
+        contactLink.textContent = originalText;
+        contactLink.style.color = "";
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('Failed to copy email: ', err);
+    });
+}
+</script>
 
 <!-- In the novel, *The Strange Case of Dr. Jekyll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
 
