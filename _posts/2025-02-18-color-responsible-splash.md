@@ -3,7 +3,7 @@ layout: post
 title: "Apple Music 스타일 앨범 커버 UI/UX 구현하기"
 date: 2025-02-18
 tags: [Flutter, UI/UX, Animation]
-read_time: 10
+read_time: 20
 subtitle: "이미지의 색상을 추출하여 반응하는 컨테이너 UI를 구현해봅니다."
 ---
 

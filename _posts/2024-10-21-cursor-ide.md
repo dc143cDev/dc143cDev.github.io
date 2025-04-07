@@ -2,9 +2,9 @@
 layout: post
 title: "프롬프트 한 문장으로 프로젝트 시각화하기"
 date: 2024-10-21
-tags: [AI, Tool, IDE, Documentation]
+tags: [AI, Tool, Documentation]
 read_time: 7
-subtitle: "Cursor IDE의 코드베이스 기능과 머메이드 AI의 마크다운을 이용하여 프로젝트의 구조도를 그려봅시다"
+subtitle: "Cursor의 코드베이스 기능과 머메이드 AI의 마크다운을 이용하여 프로젝트의 구조도를 그려봅시다"
 sgst_post: ["2024-11-24-audiokit.md"]
 ---
 
