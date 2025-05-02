@@ -46,7 +46,7 @@
   
   .site-title {
     text-decoration: none;
-    color: var(--body-color);
+    color: var(--body-color, #495057);
     
     .title-accent {
       color: #dc143c;
@@ -114,7 +114,7 @@
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 400;
-  color: var(--gray-600);
+  color: var(--gray-600, #868e96);
   text-decoration: none;
   transition: color 0.2s ease;
   position: relative;
@@ -177,7 +177,7 @@
   margin-bottom: 0.5rem;
   
   a {
-    color: var(--title-color);
+    color: var(--title-color, #dc143c);
     text-decoration: none;
     
     &:hover {
@@ -189,14 +189,14 @@
 .post-date {
   display: block;
   font-size: 0.9rem;
-  color: var(--gray-600);
+  color: var(--gray-600, #868e96);
   margin-bottom: 0.75rem;
 }
 
 .post-excerpt {
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--body-color);
+  color: var(--body-color, #495057);
 }
 
 @media (max-width: 768px) {

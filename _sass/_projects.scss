@@ -9,7 +9,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 2.5rem;
-  color: var(--heading-color);
+  color: var(--heading-color, #212529);
   animation: fadeInDown 0.5s ease-out;
 }
 
@@ -123,21 +123,21 @@
     font-size: 0.95rem;
     
     .project-type {
-      background: var(--secondary-bg);
+      background: var(--secondary-bg, #f8f9fa);
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
       font-weight: 500;
     }
     
     .project-date {
-      color: var(--secondary-color);
+      color: var(--secondary-color, #6c757d);
     }
   }
   
   .project-description {
     margin: 0;
     font-size: 1.1rem;
-    color: var(--secondary-color);
+    color: var(--secondary-color, #6c757d);
     line-height: 1.6;
   }
 }
@@ -167,6 +167,7 @@
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
+      color: var(--heading-color, #212529);
     }
     
     .project-meta {
@@ -177,21 +178,21 @@
       margin-bottom: 1.5rem;
       
       .project-type {
-        background: var(--secondary-bg);
+        background: var(--secondary-bg, #f8f9fa);
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-weight: 500;
       }
       
       .project-date {
-        color: var(--secondary-color);
+        color: var(--secondary-color, #6c757d);
       }
     }
     
     .project-description {
       font-size: 1.25rem;
       margin-bottom: 2rem;
-      color: var(--secondary-color);
+      color: var(--secondary-color, #6c757d);
       line-height: 1.6;
     }
     
@@ -211,6 +212,7 @@
   .project-content {
     font-size: 1.1rem;
     line-height: 1.8;
+    color: var(--body-color, #495057);
     
     p, ul, ol, blockquote {
       margin-bottom: 1.5rem;
@@ -219,11 +221,13 @@
     h2 {
       font-size: 1.8rem;
       margin: 2.5rem 0 1rem;
+      color: var(--heading-color, #212529);
     }
     
     h3 {
       font-size: 1.5rem;
       margin: 2rem 0 1rem;
+      color: var(--heading-color, #212529);
     }
   }
   
@@ -237,7 +241,7 @@
       font-size: 1.6rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
-      color: var(--heading-color);
+      color: var(--heading-color, #212529);
     }
     
     .related-posts-list {
@@ -273,7 +277,7 @@
         font-size: 1.25rem;
         font-weight: 600;
         margin: 0 0 0.5rem;
-        color: var(--heading-color);
+        color: var(--heading-color, #212529);
         transition: color 0.3s ease;
       }
       

@@ -15,8 +15,8 @@ html {
 }
 
 body {
-  color: #515151;
-  background-color: #fff;
+  color: var(--body-color, #515151);
+  background-color: var(--body-bg, #fff);
   -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
 }

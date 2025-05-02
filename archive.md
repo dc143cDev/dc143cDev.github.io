@@ -6,7 +6,7 @@ permalink: /archive/
 
 <div class="posts-container">
   <h1 class="archive-title">Archive</h1>
-  <p class="results-count" style="color: var(--gray-600); margin-top: -1rem; font-size: 1rem;">
+  <p class="results-count" style="color: var(--gray-600, #868e96); margin-top: -1rem; font-size: 1rem;">
     {{ site.posts.size }} items
   </p>
 
@@ -19,7 +19,7 @@ permalink: /archive/
     {% endfor %}
   </div>
 
-  <h1 class="results-title" style="display: none;"><span id="resultCount"></span> Results</h1>
+  <h1 class="results-title" style="display: none; color: var(--heading-color, #212529);"><span id="resultCount"></span> Results</h1>
 
   <div class="posts-list">
     {% for post in site.posts %}
