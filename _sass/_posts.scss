@@ -15,19 +15,18 @@
 // Blog post or page title
 .page-title,
 .post-title {
-  color: var(--heading-color);
-}
-.page-title,
-.post-title {
+  color: var(--heading-color, #212529);
   margin-top: 0;
 }
 .post-title a {
   color: inherit;
+  color: var(--heading-color, #212529);
   text-decoration: none;
 
   &:hover,
   &:focus {
     text-decoration: underline;
+    color: #dc143c;
   }
 }
 
@@ -140,7 +139,7 @@
       margin-top: 3.5rem;
       margin-bottom: 1.3rem;
       letter-spacing: -0.02em;
-      color: var(--heading-color);
+      color: var(--heading-color, #212529);
     }
     
     h3 {
@@ -149,7 +148,7 @@
       margin-top: 2.5rem;
       margin-bottom: 1.1rem;
       letter-spacing: -0.015em;
-      color: var(--heading-color);
+      color: var(--heading-color, #212529);
     }
     
     h4 {
@@ -158,7 +157,7 @@
       margin-top: 2rem;
       margin-bottom: 1rem;
       letter-spacing: -0.01em;
-      color: var(--heading-color);
+      color: var(--heading-color, #212529);
     }
     
     ul, ol {

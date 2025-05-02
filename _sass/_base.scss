@@ -38,7 +38,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: .5rem;
   font-weight: 600;
   line-height: 1.25;
-  color: #313131;
+  color: var(--heading-color, #212529);
   text-rendering: optimizeLegibility;
 }
 

@@ -107,11 +107,12 @@
   }
   
   .project-title {
-    margin: 0 0 0.5rem;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--heading-color);
-    transition: color 0.3s ease;
+    margin-top: 0;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 700;
+    color: var(--heading-color, #212529);
   }
   
   .project-meta {
