@@ -2,7 +2,7 @@
 title: dc143c
 tagline: blog
 
-url: https://dc143cDev.github.io
+url: https://dc143cdev.github.io
 #paginate: 1
 baseurl: ""
 permalink: /:title/

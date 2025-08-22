@@ -1,0 +1,24 @@
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+/Users/moadata/.rbenv/versions/3.2.5/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-oai3qq sitelibdir\=./.gem.20250822-33395-oai3qq clean
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-oai3qq sitelibdir\=./.gem.20250822-33395-oai3qq
+compiling ruby_http_parser.c
+ruby_http_parser.c:365:17: warning: comparison of integers of different signs: 'size_t' (aka 'unsigned long') and 'long' [-Wsign-compare]
+  365 |     if (nparsed < len)
+      |         ~~~~~~~ ^ ~~~
+1 warning generated.
+compiling ryah_http_parser.c
+linking shared-object ruby_http_parser.bundle
+ld: warning: ignoring duplicate libraries: '-lruby.3.2'
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-oai3qq sitelibdir\=./.gem.20250822-33395-oai3qq install
+/usr/bin/install -c -m 0755 ruby_http_parser.bundle ./.gem.20250822-33395-oai3qq
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-oai3qq sitelibdir\=./.gem.20250822-33395-oai3qq clean

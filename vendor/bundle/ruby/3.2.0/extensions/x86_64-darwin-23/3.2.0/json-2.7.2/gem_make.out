@@ -1,0 +1,16 @@
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/json-2.7.2/ext/json
+/Users/moadata/.rbenv/versions/3.2.5/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-1q4l9x sitelibdir\=./.gem.20250822-33395-1q4l9x clean
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-1q4l9x sitelibdir\=./.gem.20250822-33395-1q4l9x
+make: Nothing to be done for `all'.
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-1q4l9x sitelibdir\=./.gem.20250822-33395-1q4l9x install
+
+current directory: /Users/moadata/Downloads/poole-master/vendor/bundle/ruby/3.2.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20250822-33395-1q4l9x sitelibdir\=./.gem.20250822-33395-1q4l9x clean

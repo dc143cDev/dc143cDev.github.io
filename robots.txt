@@ -1,4 +1,7 @@
+---
+layout: null
+---
 User-agent: *
 Allow: /
 
-Sitemap: https://dc143cDev.github.io/sitemap.xml 
+Sitemap: {{ '/sitemap.xml' | absolute_url }} 

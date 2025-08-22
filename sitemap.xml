@@ -5,7 +5,7 @@ layout: null
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   {% for post in site.posts %}
     <url>
-      <loc>{{ site.url }}{{ post.url }}</loc>
+      <loc>{{ post.url | absolute_url }}</loc>
       {% if post.lastmod %}
         <lastmod>{{ post.lastmod | date_to_xmlschema }}</lastmod>
       {% elsif post.date %}
@@ -21,7 +21,7 @@ layout: null
   {% for page in site.pages %}
     {% if page.layout != nil and page.layout != 'feed' and page.url != '/404.html' %}
     <url>
-      <loc>{{ site.url }}{{ page.url }}</loc>
+      <loc>{{ page.url | absolute_url }}</loc>
       <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.5</priority>
@@ -31,7 +31,7 @@ layout: null
   
   {% for project in site.projects %}
     <url>
-      <loc>{{ site.url }}{{ project.url }}</loc>
+      <loc>{{ project.url | absolute_url }}</loc>
       <lastmod>{{ project.date | date_to_xmlschema }}</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
