@@ -34,6 +34,10 @@ exclude:
   - Gemfile.lock
   - LICENSE.md
   - README.md
+  - vendor/
+  - vendor/**
+  - _site/
+  - node_modules/
 
 sass:
   sass_dir: _sass
